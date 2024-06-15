@@ -1,4 +1,6 @@
 "use server";
+import { auth } from "@/auth";
+import { getUserById } from "@/data/user";
 import { db } from "@/lib/db";
 import { TweetSchema } from "@/schemas";
 import { revalidatePath } from "next/cache";
@@ -7,19 +9,20 @@ import * as z from "zod";
 export type TweetFormValues = z.infer<typeof TweetSchema>;
 
 export const createTweet = async (values: TweetFormValues) => {
+  const currentUser = await auth();
+  const user = await getUserById(currentUser?.user.id);
   const validatedFields = TweetSchema.safeParse(values);
-  console.log(values);
 
-  if (!validatedFields.success) {
+  if (!validatedFields.success || !user) {
     return { error: "Invalid fields!" };
   }
 
-  const { authorId, description, mediaUrl } = validatedFields.data;
+  const { description, mediaUrl } = validatedFields.data;
 
   try {
     const newTweet = await db.tweet.create({
       data: {
-        authorId,
+        authorId: user.id,
         description,
       },
     });

@@ -12,6 +12,7 @@ import {
   PhUsers,
   PrimeTwitter,
   RiAdvertisementFill,
+  RiQuillPenFill,
   RiSettings5Fill,
   SolarPodcastBold,
   StreamlineInterfaceFileClipboardWorkPlainClipboardTaskListCompanyOffice,
@@ -102,7 +103,7 @@ export const sidebarOptions: SidebarOption[] = [
     icon: StreamlineInterfaceSettingMenuHorizontalCircleNavigationDotsThreeCircleButtonHorizontalMenu,
   },
   {
-    name: "Accounts",
+    name: "Post",
     popover: true,
     popoverOptions: [
       {
@@ -118,6 +119,6 @@ export const sidebarOptions: SidebarOption[] = [
         href: "/logout",
       },
     ],
-    icon: MaterialSymbolsPerson,
+    icon: RiQuillPenFill,
   },
 ];

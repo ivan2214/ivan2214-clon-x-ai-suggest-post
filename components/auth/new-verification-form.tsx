@@ -53,8 +53,8 @@ export const NewFerificationForm: React.FC<NewFerificationFormProps> = ({ token 
 
   return (
     <CardWrapper
-      hederLabel="Confirm your verification"
-      backButtonLabel="Back to login"
+      hederLabel="Confirmar correo electronico"
+      backButtonLabel="Volver a iniciar sesión"
       backButtonHref="/auth/login"
     >
       <div className="flex w-full flex-col items-center justify-center">

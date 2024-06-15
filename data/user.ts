@@ -1,11 +1,12 @@
-import { db } from '@/lib/db';
+import { db } from "@/lib/db";
+import { Account, ReplyComment, Tweet, User } from "@prisma/client";
 
 export const getUserByEmail = async (email: string) => {
   try {
     const user = await db.user.findUnique({
       where: {
-        email
-      }
+        email,
+      },
     });
 
     return user;
@@ -15,12 +16,34 @@ export const getUserByEmail = async (email: string) => {
   }
 };
 
-export const getUserById = async (id: string) => {
+export interface UserExtend extends User {
+  accounts: Account[] | null;
+  replies?: ReplyComment[] | null;
+  tweets?: Tweet[] | null;
+  _count: {
+    tweets: number;
+  };
+}
+
+export const getUserById = async (id?: string): Promise<UserExtend | null> => {
+  if (!id) {
+    return null;
+  }
   try {
     const user = await db.user.findUnique({
       where: {
-        id
-      }
+        id,
+      },
+      include: {
+        accounts: true,
+        replies: true,
+        tweets: true,
+        _count: {
+          select: {
+            tweets: true,
+          },
+        },
+      },
     });
 
     return user;

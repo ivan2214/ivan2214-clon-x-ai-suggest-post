@@ -44,7 +44,6 @@ export default function TweetForm({}: Props) {
 
   const form = useForm<TweetFormValues>({
     defaultValues: {
-      authorId: "clxfhcmb80001dfyyahpeiab1",
       description: "",
       mediaUrl: [],
     },
@@ -150,7 +149,6 @@ export default function TweetForm({}: Props) {
       createTweet(values).then((res) => {
         setError(res.error);
         setSuccess(res.success);
-        
       });
     });
   }
@@ -164,7 +162,10 @@ export default function TweetForm({}: Props) {
         />
         <div className="flex flex-col gap-y-5 items-start w-full">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-col gap-y-4">
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="w-full flex flex-col gap-y-4"
+            >
               <div className="w-full flex flex-col gap-y-5">
                 <div>
                   <Button

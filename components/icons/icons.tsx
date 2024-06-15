@@ -346,6 +346,57 @@ export function RiSettings5Fill(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+export function RiQuillPenFill(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        d="M21 1.997c-15 0-17 14-18 20h1.998c.666-3.333 2.333-5.167 5.002-5.5c4-.5 7-4 8-7l-1.5-1l1-1c1-1 2.004-2.5 3.5-5.5"
+      ></path>
+    </svg>
+  );
+}
+
+export function MdiGoogle(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        d="M21.35 11.1h-9.17v2.73h6.51c-.33 3.81-3.5 5.44-6.5 5.44C8.36 19.27 5 16.25 5 12c0-4.1 3.2-7.27 7.2-7.27c3.09 0 4.9 1.97 4.9 1.97L19 4.72S16.56 2 12.1 2C6.42 2 2.03 6.8 2.03 12c0 5.05 4.13 10 10.22 10c5.35 0 9.25-3.67 9.25-9.09c0-1.15-.15-1.81-.15-1.81"
+      ></path>
+    </svg>
+  );
+}
+
+export function MaterialSymbolsCheckCircle(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="currentColor"
+        d="m10.6 16.6l7.05-7.05l-1.4-1.4l-5.65 5.65l-2.85-2.85l-1.4 1.4zM12 22q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22"
+      ></path>
+    </svg>
+  );
+}
+
 export const TagIcons: Record<
   string,
   (props: SVGProps<SVGSVGElement>) => JSX.Element
@@ -370,6 +421,9 @@ export const TagIcons: Record<
   PhUsers,
   moreoptions:
     StreamlineInterfaceSettingMenuHorizontalCircleNavigationDotsThreeCircleButtonHorizontalMenu,
+  post: RiQuillPenFill,
+  google: MdiGoogle,
+  check: MaterialSymbolsCheckCircle,
 };
 
 export const TagIcon = ({
@@ -380,6 +434,7 @@ export const TagIcon = ({
   className?: HTMLDivElement["className"];
 }) => {
   const isValid = name in TagIcons;
+
   const Icon = isValid ? TagIcons[name] : MaterialSymbolsLightHome;
 
   return <Icon className={className} />;

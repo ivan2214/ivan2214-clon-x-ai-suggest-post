@@ -6,9 +6,9 @@ interface ErrorCardProps {}
 export const ErrorCard: React.FC<ErrorCardProps> = () => {
   return (
     <CardWrapper
-      hederLabel="Oops, something went wrong"
+      hederLabel="Oops, algo salio mal"
       backButtonHref="/auth/login"
-      backButtonLabel="Back to login"
+      backButtonLabel="Volver a iniciar sesion"
     >
       <div className="flex w-full items-center justify-center">
         <ExclamationTriangleIcon className='text-destructive' />

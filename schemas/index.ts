@@ -16,5 +16,4 @@ export const RegisterSchema = z.object({
 export const TweetSchema = z.object({
   mediaUrl: z.array(z.object({ url: z.string() })).optional(),
   description: z.string().optional(),
-  authorId: z.string().cuid({ message: "Invalid ID" }),
 });

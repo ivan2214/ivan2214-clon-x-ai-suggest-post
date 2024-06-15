@@ -110,7 +110,7 @@ export const RegisterForm = () => {
           <FormSucces message={success} />
 
           <Button type="submit" className="w-full">
-            {isPending ? 'Registering...' : 'Register'}
+            {isPending ? 'Registrando...' : 'Registrarse'}
           </Button>
         </form>
       </Form>

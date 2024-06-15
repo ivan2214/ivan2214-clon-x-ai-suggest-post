@@ -128,7 +128,7 @@ export const LoginForm = () => {
           <FormSucces message={success} />
 
           <Button type="submit" className="w-full">
-            Sign in
+            Iniciar sesión
           </Button>
         </form>
       </Form>
