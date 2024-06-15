@@ -31,9 +31,13 @@ export const createTweet = async (values: TweetFormValues) => {
       });
     }
 
-    return newTweet;
+    return {
+      success: "Tweet created!",
+    };
   } catch (error) {
     console.log(error);
-    return null;
+    return {
+      error: "Something went wrong!",
+    };
   }
 };
