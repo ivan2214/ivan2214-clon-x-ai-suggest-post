@@ -26,9 +26,16 @@ type Props = {};
 export const dynamic = "force-dynamic";
 export const maxDuration = 30;
 
+interface TweetSuggestion {
+  content?: string[];
+  mediaUrl?: {
+    url: string;
+  };
+}
+
 export default function TweetForm({}: Props) {
   const [messages, setMessages] = useState<CoreMessage[]>([]);
-  const [tweetSuggestion, setTweetSuggestion] = useState<string[]>([]);
+  const [tweetSuggestion, setTweetSuggestion] = useState<TweetSuggestion>({});
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   const [error, setError] = useState<string | undefined>("");
@@ -60,6 +67,20 @@ export default function TweetForm({}: Props) {
     setShowSuggestions(!showSuggestions);
   };
 
+  const extraerUrl = (texto: string) => {
+    // Utilizar una expresión regular para encontrar la URL después de 'url=' y antes de un espacio
+    const regex = /url=([^ ]+)/;
+    const match = texto.match(regex);
+
+    if (match) {
+      // Obtener la URL encontrada después de 'url='
+      const url = match[1];
+      return url;
+    } else {
+      return "";
+    }
+  };
+
   const handleSuggestionTweet = async () => {
     const suggestion = form.getValues("description") || ("" as string);
 
@@ -82,17 +103,42 @@ export default function TweetForm({}: Props) {
       ]);
 
       const tweets = extraerTweets(content as string);
+      const mediaUrl = extraerUrl(content as string);
+      console.log("mediaUrl", mediaUrl);
+      const suggestionTweet = {
+        content: tweets,
+        mediaUrl: mediaUrl ? { url: mediaUrl } : undefined,
+      };
+
       if (tweets.length > 0) {
-        setTweetSuggestion(tweets);
+        setTweetSuggestion(suggestionTweet);
       }
     }
   };
 
   const handleSelectTweet = (index: number) => {
-    const tweet = tweetSuggestion[index];
+    const tweet = tweetSuggestion.content![index];
     const oldTweet = form.getValues("description");
+    const oldMediaUrl = form.getValues("mediaUrl");
     form.setValue("description", oldTweet ? `${oldTweet} ${tweet}` : tweet);
 
+    if (tweetSuggestion.mediaUrl) {
+      form.setValue(
+        "mediaUrl",
+        oldMediaUrl
+          ? [
+              ...oldMediaUrl,
+              {
+                url: tweetSuggestion.mediaUrl.url,
+              },
+            ]
+          : [
+              {
+                url: tweetSuggestion.mediaUrl.url,
+              },
+            ],
+      );
+    }
     setShowSuggestions(false);
   };
 
@@ -156,22 +202,37 @@ export default function TweetForm({}: Props) {
                 )}
               />
             </form>
-            {tweetSuggestion.length > 0 && showSuggestions && (
-              <ul className="flex flex-col gap-y-2 w-full">
-                {tweetSuggestion.map((t, index) => (
-                  <li
-                    key={t}
-                    className={cn(
-                      "text-gray-600/45 font-light cursor-pointer hover:bg-sky-600/60 hover:text-white hover:rounded-md p-2",
-                      index !== tweetSuggestion.length - 1 && "border-b pb-2",
-                    )}
-                    onClick={() => handleSelectTweet(index)}
-                  >
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            )}
+            {tweetSuggestion.content &&
+              showSuggestions &&
+              tweetSuggestion.content?.length > 0 && (
+                <ul className="flex flex-col gap-y-2 w-full">
+                  {tweetSuggestion.content?.map((t, index) => {
+                    const { content, mediaUrl } = tweetSuggestion;
+                    if (!content) {
+                      return null;
+                    }
+                    return (
+                      <li
+                        key={t}
+                        className={cn(
+                          "text-gray-600/45 font-light cursor-pointer hover:bg-sky-600/60 hover:text-white hover:rounded-md p-2",
+                          index !== content.length - 1 && "border-b pb-2",
+                        )}
+                        onClick={() => handleSelectTweet(index)}
+                      >
+                        {t}
+                        {mediaUrl && (
+                          <img
+                            src={mediaUrl.url}
+                            alt={t}
+                            className="w-10 h-10 object-cover"
+                          />
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
             <section className="w-full flex gap-x-3 items-center">
               <Button
                 className="bg-sky-600 hover:bg-sky-700 text-white font-bold"
@@ -180,14 +241,15 @@ export default function TweetForm({}: Props) {
               >
                 Sugerir tweet con IA
               </Button>
-              {tweetSuggestion.length > 0 && (
-                <Button
-                  className="bg-sky-600 hover:bg-sky-700 text-white font-bold"
-                  onClick={handleShowSuggestions}
-                >
-                  Sugerencias
-                </Button>
-              )}
+              {tweetSuggestion.content &&
+                tweetSuggestion.content.length > 0 && (
+                  <Button
+                    className="bg-sky-600 hover:bg-sky-700 text-white font-bold"
+                    onClick={handleShowSuggestions}
+                  >
+                    Sugerencias
+                  </Button>
+                )}
             </section>
             <span className="text-xs text-sky-600">
               🌐 Cualquier persona puede responder
