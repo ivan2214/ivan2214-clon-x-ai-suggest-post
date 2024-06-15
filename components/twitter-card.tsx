@@ -13,6 +13,22 @@ export interface TwitterCardProps {
   tweet: TweetExtends;
 }
 
+const getTimeAgo = (createdAt: Date) => {
+  const now = Date.now();
+  const secondsAgo = Math.floor((now - new Date(createdAt).getTime()) / 1000);
+
+  if (secondsAgo < 60) return "hace unos segundos";
+  const minutesAgo = Math.floor(secondsAgo / 60);
+  if (minutesAgo < 60)
+    return `hace ${minutesAgo} minuto${minutesAgo !== 1 ? "s" : ""}`;
+  const hoursAgo = Math.floor(minutesAgo / 60);
+  if (hoursAgo < 24) return `hace ${hoursAgo} hora${hoursAgo !== 1 ? "s" : ""}`;
+  const daysAgo = Math.floor(hoursAgo / 24);
+  if (daysAgo < 7) return `hace ${daysAgo} día${daysAgo !== 1 ? "s" : ""}`;
+
+  return new Date(createdAt).toLocaleDateString(); // Muestra la fecha de creación si ha pasado más de una semana
+};
+
 export const TwitterCard: React.FC<TwitterCardProps> = ({
   className,
   tweet,
@@ -31,15 +47,9 @@ export const TwitterCard: React.FC<TwitterCardProps> = ({
                 {tweet.author.name}
               </span>
               <span className="text-gray-100 font-extralight block">
-                @{tweet.author.username}
+                {tweet.author.username}
               </span>
-              <span>
-                Hace{" "}
-                {Math.floor(
-                  (Date.now() - tweet.createdAt.getTime()) / 1000 / 60,
-                )}{" "}
-                minutos
-              </span>
+              <span>{getTimeAgo(tweet.createdAt)}</span>
             </div>
           </div>
           <TagIcon name="moreoptions" className="h-4 w-4" />

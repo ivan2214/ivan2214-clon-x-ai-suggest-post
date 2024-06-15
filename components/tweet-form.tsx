@@ -1,7 +1,7 @@
 "use client";
 
 import { type CoreMessage } from "ai";
-import { useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { continueConversation } from "@/actions/continue-conversation";
 import { readStreamableValue } from "ai/rsc";
 import { cn } from "@/lib/utils";
@@ -19,8 +19,11 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
+import { UserExtend } from "@/data/user";
 
-type Props = {};
+type Props = {
+  currentUser?: UserExtend | null;
+};
 
 // Force the page to be dynamic and allow streaming responses up to 30 seconds
 export const dynamic = "force-dynamic";
@@ -33,7 +36,7 @@ interface TweetSuggestion {
   };
 }
 
-export default function TweetForm({}: Props) {
+export default function TweetForm({ currentUser }: Props) {
   const [messages, setMessages] = useState<CoreMessage[]>([]);
   const [tweetSuggestion, setTweetSuggestion] = useState<TweetSuggestion>({});
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -146,20 +149,38 @@ export default function TweetForm({}: Props) {
     setSuccess("");
 
     startTransition(() => {
-      createTweet(values).then((res) => {
-        setError(res.error);
-        setSuccess(res.success);
-      });
+      createTweet(values)
+        .then((res) => {
+          setError(res.error);
+          setSuccess(res.success);
+        })
+        .finally(() => {
+          form.reset();
+        });
     });
   }
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Verificar si las teclas Control y Enter están siendo presionadas
+      if (event.ctrlKey && event.key === "Enter") {
+        onSubmit(form.getValues());
+      }
+    };
+
+    // Agregar el event listener
+    window.addEventListener("keydown", handleKeyDown);
+
+    // Limpiar el event listener cuando el componente se desmonta
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
     <section className="p-3 border-b">
       <div className="flex items-start gap-x-2 ">
-        <img
-          className="h-10 w-10 rounded-full"
-          src="https://avatars.githubusercontent.com/u/1164540?v=4"
-        />
+        <img className="h-10 w-10 rounded-full" src={currentUser?.image!} />
         <div className="flex flex-col gap-y-5 items-start w-full">
           <Form {...form}>
             <form

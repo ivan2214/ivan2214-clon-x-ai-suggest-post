@@ -12,6 +12,8 @@ import React from "react";
 import { TagIcon, TagIcons } from "@/components/icons/icons";
 import { Account, User } from "@prisma/client";
 import { UserExtend } from "@/data/user";
+import { signOut } from "@/auth";
+import { ButtonSignOut } from "./button-sign-out";
 
 interface SidebarProps {
   currentUser?: UserExtend | null;
@@ -84,7 +86,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentUser }) => {
                 </Avatar>
               </Button>
             </PopoverTrigger>
-            <PopoverContent side="right" align="end" className="w-80 bg-black">
+            <PopoverContent
+              side="top"
+              align="end"
+              className="bg-black ml-10 mb-5"
+            >
               <section className="flex flex-col gap-y-4">
                 <div className="flex flex-col gap-y-2">
                   {currentUser?.accounts?.map((account) => (
@@ -100,7 +106,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentUser }) => {
                         <div className="flex flex-col gap-y-1">
                           <p className="font-bold">{currentUser?.name}</p>
                           <p className="text-sm font-extralight text-gray-400">
-                            @{currentUser?.username || currentUser?.name}
+                            {currentUser?.username || currentUser?.name}
                           </p>
                         </div>
                         <Button
@@ -114,17 +120,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentUser }) => {
                   ))}
                 </div>
                 <div className="border-t border-gray-700 w-full"></div>
-                <div className="flex flex-col gap-y-5 pt-2 max-w-48">
-                  <Link className="font-bold text-md" href="#">
+                <div className="flex flex-col gap-y-5 pt-2">
+                  <Link className="font-bold text-md hover:text-primary transition-colors duration-300" href="#">
                     Agregar una cuenta existente
                   </Link>
-                  <Link className="font-bold text-md" href="#">
+                  <Link className="font-bold text-md hover:text-primary transition-colors duration-300" href="#">
                     Administrar cuentas
                   </Link>
-                  <Link className="font-bold text-md" href="#">
-                    Cerrar la sessión de @
-                    {currentUser?.username || currentUser?.name}
-                  </Link>
+                  <ButtonSignOut currentUser={currentUser} />
                 </div>
               </section>
             </PopoverContent>

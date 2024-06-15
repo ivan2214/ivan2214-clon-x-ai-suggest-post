@@ -71,7 +71,7 @@ export default async function HomePageX() {
         <div className="mt-2">
           {/* form post a tweet */}
 
-          <TweetForm />
+          <TweetForm currentUser={currentUser} />
           {/* list tweets */}
           <div className="flex flex-col w-full">
             {tweets.map((tweet) => (

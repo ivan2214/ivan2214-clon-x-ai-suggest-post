@@ -1,23 +1,39 @@
-import GitHub from 'next-auth/providers/github';
-import type { NextAuthConfig } from 'next-auth';
-import google from 'next-auth/providers/google';
-import Credentials from 'next-auth/providers/credentials';
+import GitHub from "next-auth/providers/github";
+import type { NextAuthConfig } from "next-auth";
+import google from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
 
-import bcrypt from 'bcryptjs';
+import bcrypt from "bcryptjs";
 
-import { LoginSchema } from '@/schemas';
+import { LoginSchema } from "@/schemas";
 
-import { getUserByEmail } from './data/user';
+import { getUserByEmail } from "./data/user";
 
 export default {
   providers: [
-    GitHub ({
+    GitHub({
       clientId: process.env.AUTH_GITHUB_ID,
-      clientSecret: process.env.AUTH_GITHUB_SECRET
+      clientSecret: process.env.AUTH_GITHUB_SECRET,
     }),
-    google ({
+    google({
       clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+      profile(profile) {
+        console.log({
+          profile
+        });
+        
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
+          emailVerified: profile.email_verified,
+          username: profile.preferred_username
+            ? `@${profile.preferred_username}`
+            : `@${profile.name}-${profile.sub}`,
+        };
+      },
     }),
     Credentials({
       async authorize(credentials) {
@@ -28,11 +44,11 @@ export default {
 
           const user = await getUserByEmail(email);
 
-          if (!user || !user.hashPassword) {
+          if (!user || !user.hashedPassword) {
             return null;
           }
 
-          const isValid = await bcrypt.compare(password, user.hashPassword);
+          const isValid = await bcrypt.compare(password, user.hashedPassword);
 
           if (isValid) {
             return user;
@@ -40,7 +56,7 @@ export default {
         }
 
         return null;
-      }
-    })
-  ]
+      },
+    }),
+  ],
 } satisfies NextAuthConfig;
