@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Sidebar } from "./components/sidebar";
-import { fakeTweets } from "@/constants";
 import { TwitterCard } from "@/components/twitter-card";
 import TweetForm from "@/components/tweet-form";
 import { SidebarSearch } from "./components/sidebar-search";
@@ -18,6 +17,9 @@ const headerOptions = [
 
 export default async function HomePageX() {
   const tweets = await db.tweet.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
     include: {
       author: true,
       replies: {

@@ -18,7 +18,7 @@ export const TwitterCard: React.FC<TwitterCardProps> = ({
   tweet,
 }) => {
   return (
-    <div className="w-full flex items-center justify-center border-b p-5">
+    <div className="w-full flex items-center justify-center border-b p-5 overflow-hidden">
       <div className="w-full">
         <div className="flex justify-between">
           <div className="flex items-center">
@@ -45,15 +45,16 @@ export const TwitterCard: React.FC<TwitterCardProps> = ({
           <TagIcon name="moreoptions" className="h-4 w-4" />
         </div>
         <p className="block text-xl leading-snug mt-3">{tweet.description}</p>
-        {tweet.mediaUrl && tweet.mediaUrl.length && (
+        {tweet.mediaUrl && tweet.mediaUrl.length > 0 && (
           <div className="w-full p-5 max-w-full h-auto rounded-xl">
             <img
               className="w-full h-auto max-h-[550px] object-cover rounded-xl"
               src={tweet.mediaUrl[0].url || "https://picsum.photos/200"}
+              alt={tweet.description || ""}
             />
           </div>
         )}
-        <div className="my-1"></div>
+
         <div className="flex mt-3 justify-between">
           <div className="flex items-center mr-6">
             <svg className="fill-current h-3 w-3" viewBox="0 0 24 24">

@@ -1,12 +1,14 @@
+"use server";
 import { db } from "@/lib/db";
 import { TweetSchema } from "@/schemas";
-import { Prisma } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import * as z from "zod";
 
 export type TweetFormValues = z.infer<typeof TweetSchema>;
 
 export const createTweet = async (values: TweetFormValues) => {
   const validatedFields = TweetSchema.safeParse(values);
+  console.log(values);
 
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
@@ -39,5 +41,7 @@ export const createTweet = async (values: TweetFormValues) => {
     return {
       error: "Something went wrong!",
     };
+  } finally {
+    revalidatePath("/");
   }
 };
