@@ -1,10 +1,11 @@
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { Sidebar } from "./components/sidebar";
 import { fakeTweets } from "@/constants";
 import { TwitterCard } from "@/components/twitter-card";
 import TweetForm from "@/components/tweet-form";
 import { SidebarSearch } from "./components/sidebar-search";
+import { db } from "@/lib/db";
 
 const headerOptions = [
   "Para ti",
@@ -15,7 +16,20 @@ const headerOptions = [
   "Todos",
 ];
 
-export default function HomePageX() {
+export default async function HomePageX() {
+  const tweets = await db.tweet.findMany({
+    include: {
+      author: true,
+      replies: {
+        include: {
+          author: true,
+          comment: true,
+          tweet: true,
+        },
+      },
+    },
+  });
+
   return (
     <main className="w-full h-full container px-20 grid grid-cols-9">
       {/* sidebar */}
@@ -52,8 +66,8 @@ export default function HomePageX() {
           <TweetForm />
           {/* list tweets */}
           <div className="flex flex-col w-full">
-            {fakeTweets.map((tweet) => (
-              <TwitterCard key={tweet.name} {...tweet} />
+            {tweets.map((tweet) => (
+              <TwitterCard key={tweet.id} tweet={tweet} />
             ))}
           </div>
         </div>

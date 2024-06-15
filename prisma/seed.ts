@@ -1,46 +1,31 @@
 import { PrismaClient } from "@prisma/client";
-
+import { clearDatabase } from "./seeds/clearDatabase";
+import { createUsers } from "./seeds/createUsers";
+import { createTweets } from "./seeds/createTweets";
+import { createReplyComments } from "./seeds/createReplyComments";
 
 const prisma = new PrismaClient();
 
 async function main() {
   // Verifica si ya existen datos en la base de datos
- /*  const [
-    adminsAlreadyCreated,
-    employeesAlreadyCreated,
-    familysAlreadyCreated,
-    productAlreadyCreated,
-    saleAlreadyCreated,
-    paymentAlreadyCreated,
-  ] = await prisma.$transaction([
-    prisma.admin.findMany(),
-    prisma.employee.findMany(),
-    prisma.family.findMany(),
-    prisma.product.findMany(),
-    prisma.buy.findMany(),
-    prisma.payment.findMany(),
-  ]);
+  const [userCount] = await prisma.$transaction([prisma.user.count()]);
 
-  if (
-    adminsAlreadyCreated.length > 0 &&
-    employeesAlreadyCreated.length > 0 &&
-    familysAlreadyCreated.length > 0 &&
-    productAlreadyCreated.length > 0 &&
-    saleAlreadyCreated.length > 0 &&
-    paymentAlreadyCreated.length > 0
-  ) {
+  if (userCount > 0) {
+    console.log("Data already exists. Skipping seed.");
     return;
-  } */
+  }
 
   // Limpia la base de datos
-  await prisma.$transaction([
-    
-  ]);
+  await clearDatabase();
 
   // Crea nuevos datos
   await prisma.$transaction(async () => {
-    
+    await createUsers();
+    await createTweets();
+    await createReplyComments();
   });
+
+  console.log("Database seeded successfully.");
 }
 
 main()
