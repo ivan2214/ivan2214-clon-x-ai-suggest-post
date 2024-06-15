@@ -57,18 +57,28 @@ model Tweet {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
 
-  mediaUrl    String?
+  mediaUrl    MediaUrl[]
   description String?
 
-  authorId    String
-  author      User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  
-  retweets    Int            @default(0)
-  likes       Int            @default(0)
-  plays       Int            @default(0)
-  replies     ReplyComment[]
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  retweets Int            @default(0)
+  likes    Int            @default(0)
+  plays    Int            @default(0)
+  replies  ReplyComment[]
 
   @@index([authorId])
+}
+
+model MediaUrl {
+  id  String @id @default(cuid())
+  url String
+
+  tweet   Tweet?  @relation(fields: [tweetId], references: [id])
+  tweetId String?
+
+  @@index([tweetId])
 }
 
 model Comment {

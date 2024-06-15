@@ -8,13 +8,18 @@ export async function createTweets() {
   const numberOfTweets = faker.number.int({ min: 5, max: 10 });
 
   for (let i = 0; i < numberOfTweets; i++) {
-    await prisma.tweet.create({
+    const tweet = await prisma.tweet.create({
       data: {
         description: faker.lorem.paragraph(),
         authorId: selectUser.id,
         likes: faker.number.int({ min: 0, max: 100 }),
         plays: faker.number.int({ min: 0, max: 100 }),
-        mediaUrl: faker.image.url(),
+      },
+    });
+    await prisma.mediaUrl.create({
+      data: {
+        url: faker.image.url(),
+        tweetId: tweet.id,
       },
     });
   }

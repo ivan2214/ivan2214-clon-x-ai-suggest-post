@@ -27,6 +27,7 @@ export default async function HomePageX() {
           tweet: true,
         },
       },
+      mediaUrl: true,
     },
   });
 

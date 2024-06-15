@@ -1,10 +1,11 @@
 import { HTMLAttributes } from "react";
 import { TagIcon } from "./icons/icons";
-import { ReplyComment, Tweet, User } from "@prisma/client";
+import { MediaUrl, ReplyComment, Tweet, User } from "@prisma/client";
 
 interface TweetExtends extends Tweet {
   author: User;
   replies: ReplyComment[];
+  mediaUrl: MediaUrl[];
 }
 
 export interface TwitterCardProps {
@@ -44,11 +45,11 @@ export const TwitterCard: React.FC<TwitterCardProps> = ({
           <TagIcon name="moreoptions" className="h-4 w-4" />
         </div>
         <p className="block text-xl leading-snug mt-3">{tweet.description}</p>
-        {tweet.mediaUrl && (
+        {tweet.mediaUrl && tweet.mediaUrl.length && (
           <div className="w-full p-5 max-w-full h-auto rounded-xl">
             <img
               className="w-full h-auto max-h-[550px] object-cover rounded-xl"
-              src={tweet.mediaUrl || "https://picsum.photos/200"}
+              src={tweet.mediaUrl[0].url || "https://picsum.photos/200"}
             />
           </div>
         )}
