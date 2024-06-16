@@ -39,10 +39,10 @@ export default async function HomePageX() {
   const currentUser = await getUserById(user?.user.id);
 
   return (
-    <main className="w-full h-full container px-20 grid grid-cols-9">
+    <main className="w-full h-full container px-20 grid grid-cols-9 grid-flow-row-dense">
       {/* sidebar */}
 
-      <aside className="col-span-1 border-r flex justify-center items-center">
+      <aside className="border-r flex justify-center items-center">
         <Sidebar currentUser={currentUser} />
       </aside>
       {/* content */}

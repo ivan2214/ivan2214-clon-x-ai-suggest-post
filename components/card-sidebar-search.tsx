@@ -15,8 +15,8 @@ export const CardSidebarSearch: React.FC<CardSidebarSearchProps> = ({
 }) => {
   return (
     <Card className={cn(className)}>
-      <CardHeader className="font-bold text-xl">{title}</CardHeader>
-      <CardContent>{children}</CardContent>
+      <CardHeader className="font-bold text-xl p-3">{title}</CardHeader>
+      <CardContent className="p-3">{children}</CardContent>
     </Card>
   );
 };

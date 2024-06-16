@@ -237,7 +237,7 @@ export default function TweetForm({ currentUser }: Props) {
                         <li
                           key={t}
                           className={cn(
-                            "text-gray-600/45 font-light cursor-pointer hover:bg-sky-600/60 hover:text-white hover:rounded-md p-2",
+                            "text-gray-400 font-light cursor-pointer hover:bg-sky-600/60 hover:text-white hover:rounded-md p-2",
                             index !== content.length - 1 && "border-b pb-2",
                           )}
                           onClick={() => handleSelectTweet(index)}
@@ -268,6 +268,7 @@ export default function TweetForm({ currentUser }: Props) {
                     <Button
                       className="bg-sky-600 hover:bg-sky-700 text-white font-bold"
                       onClick={handleShowSuggestions}
+                      type="button"
                     >
                       Sugerencias
                     </Button>

@@ -10,7 +10,7 @@ export const SidebarSearch: React.FC<SidebarSearchProps> = ({}) => {
     <aside className="py-2 px-6 max-w-lg overflow-hidden">
       <section className="flex flex-col gap-y-4 w-full items-start">
         {/* buscador */}
-        <div className="flex items-center gap-x-4 bg-gray-500/45 rounded-xl w-full px-4">
+        <div className="flex items-center gap-x-4 w-full bg-gray-500/45 rounded-xl px-4">
           <TagIcon name="explore" className="h-8 w-8" />
           <Input
             type="text"
@@ -19,23 +19,25 @@ export const SidebarSearch: React.FC<SidebarSearchProps> = ({}) => {
           />
         </div>
         {/* Cards */}
-        <div className="flex flex-col items-start gap-y-4">
+        <div className="flex flex-col items-start gap-y-4 w-full">
           <CardSidebarSearch
             title="Suscribite a Premiun"
-            className="bg-transparent border"
+            className="bg-transparent border w-full"
           >
-            <p>
-              Suscríbete para desbloquear nuevas funciones y, si eres elegible,
-              recibir un pago de cuota de ingresos por anuncios.
-            </p>
-            <Button className="bg-sky-600">Suscribirse</Button>
+            <div className="flex flex-col items-start gap-y-4">
+              <p className="text-sm font-semibold">
+                Suscríbete para desbloquear nuevas funciones y, si eres
+                elegible, recibir un pago de cuota de ingresos por anuncios.
+              </p>
+              <Button className="bg-sky-600">Suscribirse</Button>
+            </div>
           </CardSidebarSearch>
 
           {/* en directo een X */}
 
           <CardSidebarSearch
             title="En directo en X"
-            className="bg-transparent border"
+            className="bg-transparent border w-full"
           >
             <section className="flex flex-col gap-y-4">
               <article className="flex gap-x-2 w-full items-start overflow-hidden">
@@ -103,7 +105,7 @@ export const SidebarSearch: React.FC<SidebarSearchProps> = ({}) => {
 
           <CardSidebarSearch
             title="A quien seguir"
-            className="bg-transparent border"
+            className="bg-transparent border w-full"
           >
             <section className="flex w-full gap-y-4 flex-col">
               <article className="flex gap-x-2 items-start w-full">
