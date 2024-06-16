@@ -15,18 +15,33 @@ export interface TwitterCardProps {
 
 const getTimeAgo = (createdAt: Date) => {
   const now = Date.now();
-  const secondsAgo = Math.floor((now - new Date(createdAt).getTime()) / 1000);
+  const diff = now - new Date(createdAt).getTime();
 
-  if (secondsAgo < 60) return "hace unos segundos";
-  const minutesAgo = Math.floor(secondsAgo / 60);
-  if (minutesAgo < 60)
-    return `hace ${minutesAgo} minuto${minutesAgo !== 1 ? "s" : ""}`;
-  const hoursAgo = Math.floor(minutesAgo / 60);
-  if (hoursAgo < 24) return `hace ${hoursAgo} hora${hoursAgo !== 1 ? "s" : ""}`;
-  const daysAgo = Math.floor(hoursAgo / 24);
-  if (daysAgo < 7) return `hace ${daysAgo} día${daysAgo !== 1 ? "s" : ""}`;
+  const seconds = Math.floor(diff / 1000);
+  if (seconds < 60) return `${seconds} seg`;
 
-  return new Date(createdAt).toLocaleDateString(); // Muestra la fecha de creación si ha pasado más de una semana
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes} min`;
+
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} hora${hours !== 1 ? "s" : ""}`;
+
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `hace ${days} día${days !== 1 ? "s" : ""}`;
+
+  const createdAtDate = new Date(createdAt);
+  const currentYear = new Date().getFullYear();
+  const createdYear = createdAtDate.getFullYear();
+
+  const options: Intl.DateTimeFormatOptions = { day: "numeric", month: "long" };
+  if (currentYear === createdYear) {
+    return createdAtDate.toLocaleDateString("es-ES", options);
+  } else {
+    return createdAtDate.toLocaleDateString("es-ES", {
+      ...options,
+      year: "numeric",
+    });
+  }
 };
 
 export const TwitterCard: React.FC<TwitterCardProps> = ({

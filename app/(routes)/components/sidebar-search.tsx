@@ -10,12 +10,12 @@ export const SidebarSearch: React.FC<SidebarSearchProps> = ({}) => {
     <aside className="py-2 px-6 max-w-lg overflow-hidden">
       <section className="flex flex-col gap-y-4 w-full items-start">
         {/* buscador */}
-        <div className="flex items-center gap-x-4 w-full bg-gray-500/45 rounded-xl px-4">
+        <div className="flex items-center w-full bg-gray-500/45 rounded-3xl px-4">
           <TagIcon name="explore" className="h-8 w-8" />
           <Input
             type="text"
             placeholder="Buscar"
-            className="w-full border-none"
+            className="w-full border-none focus-visible:ring-0"
           />
         </div>
         {/* Cards */}

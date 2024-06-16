@@ -1,5 +1,5 @@
 "use client";
-
+import { toast } from "sonner";
 import { type CoreMessage } from "ai";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { continueConversation } from "@/actions/continue-conversation";
@@ -151,8 +151,14 @@ export default function TweetForm({ currentUser }: Props) {
     startTransition(() => {
       createTweet(values)
         .then((res) => {
-          setError(res.error);
-          setSuccess(res.success);
+          if (res.error) {
+            setError(res.error);
+            toast(res.error);
+          }
+          if (res.success) {
+            setSuccess(res.success);
+            toast(res.success);
+          }
         })
         .finally(() => {
           form.reset();

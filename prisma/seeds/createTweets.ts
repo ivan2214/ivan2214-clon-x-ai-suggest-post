@@ -14,7 +14,7 @@ export async function createTweets() {
         authorId: selectUser.id,
         likes: faker.number.int({ min: 0, max: 100 }),
         plays: faker.number.int({ min: 0, max: 100 }),
-        createdAt: faker.date.anytime(),
+        createdAt: faker.date.past(),
       },
     });
     await prisma.mediaUrl.create({
