@@ -20,9 +20,9 @@ export default {
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
       profile(profile) {
         console.log({
-          profile
+          profile,
         });
-        
+
         return {
           id: profile.sub,
           name: profile.name,
@@ -31,7 +31,7 @@ export default {
           emailVerified: profile.email_verified,
           username: profile.preferred_username
             ? `@${profile.preferred_username}`
-            : `@${profile.name}-${profile.sub}`,
+            : `@${profile.name}-${profile.sub.slice(0, 4)}`,
         };
       },
     }),

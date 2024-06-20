@@ -1,8 +1,8 @@
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { MdOutlineIntegrationInstructions } from 'react-icons/md';
+import {MdOutlineIntegrationInstructions} from "react-icons/md"
 
-export const VerificationTemplate = ({ confirmLink }: { confirmLink: string }) => {
+import {Button} from "@/components/ui/button"
+
+export const VerificationTemplate = ({confirmLink}: {confirmLink: string}) => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100 dark:bg-gray-900">
       <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
@@ -34,12 +34,12 @@ export const VerificationTemplate = ({ confirmLink }: { confirmLink: string }) =
         <footer className="mt-6 text-center text-gray-600 dark:text-gray-400">
           <p>
             If you have any questions, please contact us at
-            <a className="text-blue-500 hover:underline" href="#">
+            <a className="text-blue-500 hover:underline" href="mailto:support@acme.com">
               support@acme.com
             </a>
           </p>
         </footer>
       </div>
     </div>
-  );
-};
+  )
+}

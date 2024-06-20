@@ -1,5 +1,6 @@
-import { db } from "@/lib/db";
-import { Account, ReplyComment, Tweet, User } from "@prisma/client";
+import {type Account, type ReplyComment, type Tweet, type User} from "@prisma/client"
+
+import {db} from "@/lib/db"
 
 export const getUserByEmail = async (email: string) => {
   try {
@@ -7,27 +8,28 @@ export const getUserByEmail = async (email: string) => {
       where: {
         email,
       },
-    });
+    })
 
-    return user;
+    return user
   } catch (error) {
-    console.log(error);
-    return null;
+    console.log(error)
+
+    return null
   }
-};
+}
 
 export interface UserExtend extends User {
-  accounts: Account[] | null;
-  replies?: ReplyComment[] | null;
-  tweets?: Tweet[] | null;
+  accounts: Account[] | null
+  replies?: ReplyComment[] | null
+  tweets?: Tweet[] | null
   _count: {
-    tweets: number;
-  };
+    tweets: number
+  }
 }
 
 export const getUserById = async (id?: string): Promise<UserExtend | null> => {
   if (!id) {
-    return null;
+    return null
   }
   try {
     const user = await db.user.findUnique({
@@ -44,11 +46,12 @@ export const getUserById = async (id?: string): Promise<UserExtend | null> => {
           },
         },
       },
-    });
+    })
 
-    return user;
+    return user
   } catch (error) {
-    console.log(error);
-    return null;
+    console.log(error)
+
+    return null
   }
-};
+}

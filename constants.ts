@@ -1,4 +1,3 @@
-import { SidebarOption } from "./types";
 import {
   ArcticonsYahooMail,
   CarbonPortfolio,
@@ -17,7 +16,9 @@ import {
   SolarPodcastBold,
   StreamlineInterfaceFileClipboardWorkPlainClipboardTaskListCompanyOffice,
   StreamlineInterfaceSettingMenuHorizontalCircleNavigationDotsThreeCircleButtonHorizontalMenu,
-} from "@components/icons/icons";
+} from "@components/icons/icons"
+
+import {type SidebarOption} from "./types"
 
 export const sidebarOptions: SidebarOption[] = [
   {
@@ -121,4 +122,4 @@ export const sidebarOptions: SidebarOption[] = [
     ],
     icon: RiQuillPenFill,
   },
-];
+]

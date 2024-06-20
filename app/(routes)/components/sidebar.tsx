@@ -1,108 +1,83 @@
-import Link from "next/link";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import Link from "next/link"
+import React from "react"
 
-import { Button } from "@ui/button";
-import { sidebarOptions } from "@/constants";
-import React from "react";
-import { TagIcon, TagIcons } from "@/components/icons/icons";
-import { Account, User } from "@prisma/client";
-import { UserExtend } from "@/data/user";
-import { signOut } from "@/auth";
-import { ButtonSignOut } from "./button-sign-out";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover"
+import {Button} from "@ui/button"
+import {sidebarOptions} from "@/constants"
+import {TagIcon, TagIcons} from "@/components/icons/icons"
+import {type UserExtend} from "@/data/user"
+
+import {ButtonSignOut} from "./button-sign-out"
 
 interface SidebarProps {
-  currentUser?: UserExtend | null;
+  currentUser?: UserExtend | null
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ currentUser }) => {
+export const Sidebar: React.FC<SidebarProps> = ({currentUser}) => {
   return (
-    <section className="h-full items-center flex justify-center fixed top-0 flex-col p-4">
+    <section className="fixed top-0 flex h-full flex-col items-center justify-center p-4">
       {/* logo */}
 
-      <div className="w-full flex flex-col items-center justify-between h-full">
-        <ul className="flex flex-col items-center h-full gap-y-1">
+      <div className="flex h-full w-full flex-col items-center justify-between">
+        <ul className="flex h-full flex-col items-center gap-y-1">
           <Link href="/">
             <img
-              src="https://imgs.search.brave.com/zbvB3wCiEbb71hYQHjG-8saDi71vPc4yOVhzizCo_8k/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTIy/NjM4NjQzMC92ZWN0/b3IvdmVjdG9yLWRv/dWJsZS1saW5lLWFs/dGVybmF0aXZlLWxv/Z28tbGV0dGVyLXgu/anBnP3M9NjEyeDYx/MiZ3PTAmaz0yMCZj/PWx4UWZCZmNULVJi/UG9ZZVVRUmNsb01o/VG56RnlGQjJndEdZ/N2JVcUtzU2M9"
               alt="logo"
-              className="h-12 w-12 object-cover rounded-full mx-auto"
+              className="mx-auto h-12 w-12 rounded-full object-cover"
+              src="https://imgs.search.brave.com/zbvB3wCiEbb71hYQHjG-8saDi71vPc4yOVhzizCo_8k/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTIy/NjM4NjQzMC92ZWN0/b3IvdmVjdG9yLWRv/dWJsZS1saW5lLWFs/dGVybmF0aXZlLWxv/Z28tbGV0dGVyLXgu/anBnP3M9NjEyeDYx/MiZ3PTAmaz0yMCZj/PWx4UWZCZmNULVJi/UG9ZZVVRUmNsb01o/VG56RnlGQjJndEdZ/N2JVcUtzU2M9"
             />
           </Link>
           {sidebarOptions.map((option) => {
-            const isValid = option.name.toLowerCase() in TagIcons;
+            const isValid = option.name.toLowerCase() in TagIcons
 
             return (
               <li key={option.name}>
                 {option.href ? (
                   <Button
-                    className="rounded-full w-fit h-fit"
-                    variant="ghost"
+                    className="h-fit w-fit rounded-full"
                     role="link"
                     type="button"
+                    variant="ghost"
                   >
                     <Link href={option.href}>
                       {isValid ? (
-                        <TagIcon
-                          className="w-8 h-8"
-                          name={option.name.toLowerCase()}
-                        />
+                        <TagIcon className="h-8 w-8" name={option.name.toLowerCase()} />
                       ) : null}
                     </Link>
                   </Button>
                 ) : (
-                  <Button
-                    className="rounded-full"
-                    variant="ghost"
-                    role="link"
-                    type="button"
-                  >
+                  <Button className="rounded-full" role="link" type="button" variant="ghost">
                     {option.icon && isValid ? (
-                      <TagIcon
-                        className="w-8 h-8"
-                        name={option.name.toLowerCase()}
-                      />
+                      <TagIcon className="h-8 w-8" name={option.name.toLowerCase()} />
                     ) : null}
                   </Button>
                 )}
               </li>
-            );
+            )
           })}
         </ul>
         <section>
           <Popover>
             <PopoverTrigger asChild>
-              <Button
-                variant="ghost"
-                className="rounded-full hover:bg-primary h-fit w-fit"
-              >
+              <Button className="h-fit w-fit rounded-full hover:bg-primary" variant="ghost">
                 <Avatar>
                   <AvatarImage src={currentUser?.image || ""} />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </Button>
             </PopoverTrigger>
-            <PopoverContent
-              side="top"
-              align="end"
-              className="bg-black ml-10 mb-5"
-            >
+            <PopoverContent align="end" className="mb-5 ml-10 bg-black" side="top">
               <section className="flex flex-col gap-y-4">
                 <div className="flex flex-col gap-y-2">
                   {currentUser?.accounts?.map((account) => (
-                    <div key={account.id} className="flex gap-3 items-start">
+                    <div key={account.id} className="flex items-start gap-3">
                       <img
-                        className="w-10 h-10 rounded-full"
-                        src={
-                          currentUser.image || "https://via.placeholder.com/150"
-                        }
                         alt=""
+                        className="h-10 w-10 rounded-full"
+                        src={currentUser.image || "https://via.placeholder.com/150"}
                       />
-                      <div className="flex justify-between items-center w-full">
+                      <div className="flex w-full items-center justify-between">
                         <div className="flex flex-col gap-y-1">
                           <p className="font-bold">{currentUser?.name}</p>
                           <p className="text-sm font-extralight text-gray-400">
@@ -110,21 +85,27 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentUser }) => {
                           </p>
                         </div>
                         <Button
+                          className="h-fit w-fit rounded-full hover:bg-primary"
                           variant="ghost"
-                          className="rounded-full hover:bg-primary h-fit w-fit"
                         >
-                          <TagIcon className="w-5 h-5" name="check" />
+                          <TagIcon className="h-5 w-5" name="check" />
                         </Button>
                       </div>
                     </div>
                   ))}
                 </div>
-                <div className="border-t border-gray-700 w-full"></div>
+                <div className="w-full border-t border-gray-700" />
                 <div className="flex flex-col gap-y-5 pt-2">
-                  <Link className="font-bold text-md hover:text-primary transition-colors duration-300" href="#">
+                  <Link
+                    className="text-md font-bold transition-colors duration-300 hover:text-primary"
+                    href="#"
+                  >
                     Agregar una cuenta existente
                   </Link>
-                  <Link className="font-bold text-md hover:text-primary transition-colors duration-300" href="#">
+                  <Link
+                    className="text-md font-bold transition-colors duration-300 hover:text-primary"
+                    href="#"
+                  >
                     Administrar cuentas
                   </Link>
                   <ButtonSignOut currentUser={currentUser} />
@@ -135,5 +116,5 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentUser }) => {
         </section>
       </div>
     </section>
-  );
-};
+  )
+}

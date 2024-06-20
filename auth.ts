@@ -1,16 +1,17 @@
-import NextAuth from "next-auth";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import authConfig from "@/auth.config";
-import { db } from "@/lib/db";
-import { getUserById } from "@/data/user";
+import NextAuth from "next-auth"
+import {PrismaAdapter} from "@auth/prisma-adapter"
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+import authConfig from "@/auth.config"
+import {db} from "@/lib/db"
+import {getUserById} from "@/data/user"
+
+export const {handlers, auth, signIn, signOut} = NextAuth({
   pages: {
     signIn: "/auth/login",
     error: "/auth/error",
   },
   events: {
-    async linkAccount({ user }) {
+    async linkAccount({user}) {
       await db.user.update({
         where: {
           id: user.id,
@@ -18,45 +19,45 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         data: {
           emailVerified: new Date(),
         },
-      });
+      })
     },
   },
   callbacks: {
-    async signIn({ user, account }) {
+    async signIn({user, account}) {
       //allow Oauth without  email verification
 
       if (account?.provider !== "credentials") {
-        return true;
+        return true
       }
 
-      if (!user.id) return false;
+      if (!user.id) return false
 
-      const existingUser = await getUserById(user.id);
+      const existingUser = await getUserById(user.id)
 
       // Prevent sign in without email verification
-      if (!existingUser?.emailVerified) return false;
+      if (!existingUser?.emailVerified) return false
 
       // TODO: Add 2FA Check
 
-      return true;
+      return true
     },
-    async session({ session, token, user }) {
+    async session({session, token}) {
       if (session.user && token.sub) {
-        session.user.id = token.sub;
+        session.user.id = token.sub
       }
 
-      return session;
+      return session
     },
-    async jwt({ token }) {
-      if (!token.sub) return token;
-      const existingUser = await getUserById(token.sub);
+    async jwt({token}) {
+      if (!token.sub) return token
+      const existingUser = await getUserById(token.sub)
 
-      if (!existingUser) return token;
+      if (!existingUser) return token
 
-      return token;
+      return token
     },
   },
   adapter: PrismaAdapter(db),
-  session: { strategy: "jwt" },
+  session: {strategy: "jwt"},
   ...authConfig,
-});
+})

@@ -50,6 +50,7 @@ model User {
   accounts       Account[]
   tweets         Tweet[]
   replies        ReplyComment[]
+  comments       Comment[]
 
   @@map("users")
 }
@@ -68,6 +69,7 @@ model Tweet {
   likes    Int            @default(0)
   plays    Int            @default(0)
   replies  ReplyComment[]
+  comments Comment[]
 
   @@index([authorId])
 }
@@ -76,20 +78,29 @@ model MediaUrl {
   id  String @id @default(cuid())
   url String
 
-  tweet   Tweet?  @relation(fields: [tweetId], references: [id])
-  tweetId String?
+  tweet     Tweet?   @relation(fields: [tweetId], references: [id])
+  tweetId   String?
+  comment   Comment? @relation(fields: [commentId], references: [id])
+  commentId String?
 
   @@index([tweetId])
+  @@index([commentId])
 }
 
 model Comment {
   id        String         @id @default(cuid())
   createdAt DateTime       @default(now())
   comment   String?
-  mediaUrl  String?
+  mediaUrls MediaUrl[]
   likes     Int            @default(0)
+  author    User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String
+  tweet     Tweet          @relation(fields: [tweetId], references: [id], onDelete: Cascade)
+  tweetId   String
   replies   ReplyComment[]
 
+  @@index([authorId])
+  @@index([tweetId])
   @@map("comments")
 }
 
@@ -98,11 +109,11 @@ model ReplyComment {
   createdAt DateTime @default(now())
   commentId String
   authorId  String
-  tweetId   String?
+  tweetId   String
 
-  comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  author  User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  tweet   Tweet?   @relation(fields: [tweetId], references: [id])
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  author  User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  tweet   Tweet   @relation(fields: [tweetId], references: [id])
 
   @@index([commentId])
   @@index([authorId])

@@ -1,6 +1,4 @@
-import { db as prisma } from "../../lib/db";
-
-
+import {db as prisma} from "../../lib/db"
 
 export async function clearDatabase() {
   await prisma.$transaction([
@@ -9,5 +7,5 @@ export async function clearDatabase() {
     prisma.tweet.deleteMany(),
     prisma.account.deleteMany(),
     prisma.user.deleteMany(),
-  ]);
+  ])
 }

@@ -1,15 +1,14 @@
-"use server";
+"use server"
 
-import { createStreamableValue } from "ai/rsc";
-import { CoreMessage, streamText } from "ai";
-import { google as googleModel } from "@ai-sdk/google";
+import {generateText, type CoreMessage} from "ai"
+import {google} from "@ai-sdk/google"
 
-const model = googleModel("models/gemini-1.5-flash-latest");
+const model = google("models/gemini-1.5-flash-latest")
 
-export async function continueConversation(messages: CoreMessage[]) {
-  "use server";
+export async function continueConversation(messages: CoreMessage[]): Promise<{message: string}> {
+  "use server"
   try {
-    const result = await streamText({
+    const result = await generateText({
       model: model,
       system: `
       Eres un asistente útil y creativo para generar tweets.
@@ -41,12 +40,12 @@ export async function continueConversation(messages: CoreMessage[]) {
       Si el sistema no responde, responde con "No se Wacho soy kirchnerista".
       `,
       messages: [...messages],
-    });
+    })
 
-    const stream = createStreamableValue(result.textStream);
-    return { message: stream.value };
+    return {message: result.text}
   } catch (error) {
-    console.log(error);
-    return { message: "" };
+    console.log(error)
+
+    return {message: ""}
   }
 }
