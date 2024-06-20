@@ -11,6 +11,10 @@ import {FaRegComment} from "react-icons/fa"
 import {db} from "@/lib/db"
 import {cn} from "@/lib/utils"
 import {Button} from "@/components/ui/button"
+import {auth} from "@/auth"
+import {getUserById} from "@/data/user"
+
+import CommentForm from "./components/comment-form"
 
 interface TweetPageProps {
   params: {
@@ -123,6 +127,10 @@ export default async function TweetPage({params}: TweetPageProps) {
   const formattedDate = format(createdAtDate, "p '·' d MMM. yyyy", {
     locale: es,
   })
+
+  const session = await auth()
+
+  const currentUser = await getUserById(session?.user.id)
 
   return (
     <article className="col-span-5 flex w-full flex-col items-center border-r">
@@ -246,7 +254,13 @@ export default async function TweetPage({params}: TweetPageProps) {
 
         {/* comment form */}
 
-        <section className="w-full">{/* <CommentForm tweetId={tweet.id} /> */}</section>
+        <section className="w-full">
+          <CommentForm
+            currentUser={currentUser}
+            tweetId={tweet.id}
+            username={tweet.author.username}
+          />
+        </section>
 
         {/* comments */}
 

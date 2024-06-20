@@ -7,8 +7,7 @@ import {auth} from "@/auth"
 import {getUserById} from "@/data/user"
 import {db} from "@/lib/db"
 import {TweetSchema} from "@/schemas"
-
-export type TweetFormValues = z.infer<typeof TweetSchema>
+import {type TweetFormValues} from "@/app/(routes)/(user)/[username]/status/[tweetId]/components/comment-form"
 
 export const createTweet = async (values: TweetFormValues) => {
   const currentUser = await auth()

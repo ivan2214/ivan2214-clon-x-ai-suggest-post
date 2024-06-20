@@ -78,8 +78,14 @@ model Tweet {
   comments      TweetsOnUsers[] @relation("TweetComments")
   tweetsOnUsers TweetsOnUsers[] @relation("TweetUsers")
 
+  originalTweet   Tweet?  @relation("RetweetRelation", fields: [originalTweetId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  originalTweetId String? 
+
+  retweetsList Tweet[] @relation("RetweetRelation")
+
   @@index([authorId])
   @@index([contentId])
+  @@index([originalTweetId])
 }
 
 model Content {
@@ -113,15 +119,14 @@ model TweetsOnUsers {
   userId   String
   tweet    Tweet   @relation("TweetUsers", fields: [tweetId], references: [id], onDelete: Cascade)
   tweetId  String
-  parent   Tweet?  @relation("TweetComments", fields: [parentId], references: [id], onDelete: Cascade)
-  parentId String? // Esto se usa para rastrear si el tweet es una respuesta a otro tweet (comentario)
+  parent   Tweet?  @relation("TweetComments", fields: [parentId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  parentId String? 
 
   @@index([userId])
   @@index([tweetId])
   @@index([parentId])
   @@map("tweets_on_users")
 }
-
 
 enum TypeTweet {
   TWEET
@@ -130,5 +135,4 @@ enum TypeTweet {
   LIKE
   BOOKMARK
   SHARE
-
 }
