@@ -91,7 +91,7 @@ export default async function HomePageX() {
       },
     },
 
-    take: 15,
+    take: 25,
   })
 
   const user = await auth()

@@ -8,21 +8,30 @@ const prisma = new PrismaClient()
 
 async function main() {
   // Verifica si ya existen datos en la base de datos
-  const [accountCount, mediaUrlCount, tweetCount, userCount, verificationTokenCount] =
-    await prisma.$transaction([
-      prisma.account.count(),
-      prisma.mediaUrl.count(),
-      prisma.tweet.count(),
-      prisma.user.count(),
-      prisma.verificationToken.count(),
-    ])
+  const [
+    accountCount,
+    mediaUrlCount,
+    tweetCount,
+    tweetsOnUsersCount,
+    userCount,
+    verificationTokenCount,
+  ] = await prisma.$transaction([
+    prisma.account.count(),
+    prisma.content.count(),
+    prisma.mediaUrl.count(),
+    prisma.tweet.count(),
+    prisma.tweetsOnUsers.count(),
+    prisma.user.count(),
+    prisma.verificationToken.count(),
+  ])
 
   if (
-    userCount > 0 ||
-    verificationTokenCount > 0 ||
     accountCount > 0 ||
     mediaUrlCount > 0 ||
-    tweetCount > 0
+    tweetCount > 0 ||
+    tweetsOnUsersCount > 0 ||
+    userCount > 0 ||
+    verificationTokenCount > 0
   ) {
     console.log("Data already exists. Skipping seed.")
 
