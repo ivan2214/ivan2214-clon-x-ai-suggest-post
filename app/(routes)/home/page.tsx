@@ -23,8 +23,49 @@ export default async function HomePageX() {
     },
     include: {
       author: true,
-      comments: true,
-      mediaUrl: true,
+      content: {
+        include: {
+          mediaUrls: true,
+        },
+      },
+      tweetsOnUsers: {
+        include: {
+          parent: {
+            include: {
+              author: true,
+              content: {
+                include: {
+                  mediaUrls: true,
+                },
+              },
+            },
+          },
+        },
+      },
+      comments: {
+        include: {
+          tweet: {
+            include: {
+              content: {
+                include: {
+                  mediaUrls: true,
+                },
+              },
+              author: true,
+            },
+          },
+          parent: {
+            include: {
+              author: true,
+              content: {
+                include: {
+                  mediaUrls: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   })
 

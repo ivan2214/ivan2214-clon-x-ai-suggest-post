@@ -33,14 +33,54 @@ export default async function TweetPage({params}: TweetPageProps) {
     },
     include: {
       author: true,
-      comments: {
+      content: {
         include: {
-          author: true,
-          replies: true,
           mediaUrls: true,
         },
       },
-      mediaUrl: true,
+      tweetsOnUsers: {
+        include: {
+          parent: {
+            include: {
+              author: true,
+              content: {
+                include: {
+                  mediaUrls: true,
+                },
+              },
+            },
+          },
+        },
+      },
+      comments: {
+        include: {
+          tweet: {
+            include: {
+              content: {
+                include: {
+                  mediaUrls: true,
+                },
+              },
+              author: true,
+              _count: {
+                select: {
+                  comments: true,
+                },
+              },
+            },
+          },
+          parent: {
+            include: {
+              author: true,
+              content: {
+                include: {
+                  mediaUrls: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   })
 
@@ -96,21 +136,21 @@ export default async function TweetPage({params}: TweetPageProps) {
 
         <section className="flex w-full flex-col items-center gap-y-5 px-5 py-2">
           <div>
-            <p>{tweet.description}</p>
+            <p>{tweet.content.text}</p>
           </div>
-          {tweet.mediaUrl.length > 1 ? (
+          {tweet.content.mediaUrls.length > 1 ? (
             <section className="grid grid-cols-3 gap-2">
-              {tweet.mediaUrl.map((media, index) => (
+              {tweet.content.mediaUrls.map((media, index) => (
                 <div
                   key={media.url}
                   className={cn(
                     "w-full overflow-hidden rounded-lg",
                     index === 0 ? "col-span-2" : "",
-                    index === tweet.mediaUrl.length - 1 ? "col-span-full max-h-64" : "",
+                    index === tweet.content.mediaUrls.length - 1 ? "col-span-full max-h-64" : "",
                   )}
                 >
                   <img
-                    alt={tweet.description || ""}
+                    alt={tweet.content.text || ""}
                     className="mx-auto aspect-square h-full w-full object-cover"
                     loading="lazy"
                     src={media.url}
@@ -119,13 +159,13 @@ export default async function TweetPage({params}: TweetPageProps) {
               ))}
             </section>
           ) : (
-            tweet.mediaUrl.length > 0 && (
+            tweet.content.mediaUrls.length > 0 && (
               <div className="w-full overflow-hidden rounded-lg">
                 <img
-                  alt={tweet.description || ""}
+                  alt={tweet.content.text || ""}
                   className="mx-auto aspect-square h-full w-full object-cover"
                   loading="lazy"
-                  src={tweet.mediaUrl[0].url}
+                  src={tweet.content.mediaUrls[0].url}
                 />
               </div>
             )
@@ -184,13 +224,13 @@ export default async function TweetPage({params}: TweetPageProps) {
         <section className="flex w-full flex-col items-center">
           {tweet.comments.length > 0 &&
             tweet.comments.map((comment) => {
-              const userNameLink = comment.author.username.replace("@", "")
+              const userNameLink = comment.tweet.author.username.replace("@", "")
 
               return (
                 <Link
                   key={comment.id}
                   className="w-full border-b border-t px-5 py-5"
-                  href={`/${userNameLink}/status/${comment.id}`}
+                  href={`/${userNameLink}/status/${comment.tweet.id}`}
                 >
                   <article>
                     {/* header */}
@@ -199,16 +239,16 @@ export default async function TweetPage({params}: TweetPageProps) {
                         {/* image profile */}
                         <div className="h-11 w-11 overflow-hidden rounded-full">
                           <img
-                            alt={comment.author.name || ""}
+                            alt={comment.tweet.author.name || ""}
                             className="h-full w-full"
-                            src={comment.author.image || ""}
+                            src={comment.tweet.author.image || ""}
                           />
                         </div>
                         {/* name and username */}
                         <div className="flex flex-col items-start">
-                          <p className="text-base font-bold">{comment.author.name}</p>
+                          <p className="text-base font-bold">{comment.tweet.author.name}</p>
                           <span className="text-sm font-extralight text-gray-300">
-                            {comment.author.username}
+                            {comment.tweet.author.username}
                           </span>
                         </div>
                       </section>
@@ -225,17 +265,17 @@ export default async function TweetPage({params}: TweetPageProps) {
 
                     <section className="flex w-full flex-col items-center gap-y-5 py-2">
                       <div>
-                        <p>{comment.content}</p>
+                        <p>{comment.tweet.content.text}</p>
                       </div>
-                      {comment.mediaUrls.length > 1 ? (
+                      {comment.tweet.content.mediaUrls.length > 1 ? (
                         <section className="grid grid-cols-[repeat(2,minmax(0,150px))] gap-2">
-                          {comment.mediaUrls.map((media) => (
+                          {comment.tweet.content.mediaUrls.map((media) => (
                             <div
                               key={media.url}
                               className={cn("w-full overflow-hidden rounded-lg")}
                             >
                               <img
-                                alt={comment.content || ""}
+                                alt={comment.tweet.content.text || ""}
                                 className="mx-auto aspect-square h-full w-full object-cover"
                                 loading="lazy"
                                 src={media.url}
@@ -244,13 +284,13 @@ export default async function TweetPage({params}: TweetPageProps) {
                           ))}
                         </section>
                       ) : (
-                        comment.mediaUrls.length > 0 && (
+                        comment.tweet.content.mediaUrls.length > 0 && (
                           <div className="w-full overflow-hidden rounded-lg">
                             <img
-                              alt={comment.content || ""}
+                              alt={comment.tweet.content.text || ""}
                               className="mx-auto aspect-square h-full w-full object-cover"
                               loading="lazy"
-                              src={comment.mediaUrls[0].url}
+                              src={comment.tweet.content.mediaUrls[0].url}
                             />
                           </div>
                         )
@@ -262,23 +302,27 @@ export default async function TweetPage({params}: TweetPageProps) {
                     <section className="mt-3 flex w-full items-center justify-between">
                       <div className="flex items-center gap-x-1 text-sm transition-colors duration-200 hover:text-primary">
                         <FaRegComment className="h-5 w-5" />
-                        {comment.replies.length > 0 ? <span>{comment.replies.length}</span> : null}
+                        {comment.tweet._count.comments > 0 ? (
+                          <span>{comment.tweet._count.comments}</span>
+                        ) : null}
                       </div>
                       <div className="flex items-center gap-x-1 text-sm transition-colors duration-200 hover:text-green-500">
                         <AiOutlineRetweet className="h-5 w-5" />
-                        {comment.retweets > 0 ? <span>{comment.retweets}</span> : null}
+                        {comment.tweet.retweets > 0 ? <span>{comment.tweet.retweets}</span> : null}
                       </div>
                       <div className="flex items-center gap-x-1 text-sm transition-colors duration-200 hover:text-rose-500">
                         <CiHeart className="h-5 w-5" />
-                        {comment.likes > 0 ? <span>{comment.likes}</span> : null}
+                        {comment.tweet.likes > 0 ? <span>{comment.tweet.likes}</span> : null}
                       </div>
                       <div className="flex items-center gap-x-1 text-sm transition-colors duration-200 hover:text-primary">
                         <CiBookmark className="h-5 w-5" />
-                        {comment.bookmarks > 0 ? <span>{comment.bookmarks}</span> : null}
+                        {comment.tweet.bookmarks > 0 ? (
+                          <span>{comment.tweet.bookmarks}</span>
+                        ) : null}
                       </div>
                       <div className="flex items-center gap-x-1 text-sm transition-colors duration-200 hover:text-primary">
                         <FiShare className="h-5 w-5" />
-                        {comment.shares > 0 ? <span>{comment.shares}</span> : null}
+                        {comment.tweet.shares > 0 ? <span>{comment.tweet.shares}</span> : null}
                       </div>
                     </section>
                   </article>

@@ -50,8 +50,9 @@ model User {
   hashedPassword String?
   image          String?
 
-  accounts Account[]
-  tweets   Tweet[]
+  accounts      Account[]
+  tweetsOnUsers TweetsOnUsers[]
+  tweets        Tweet[]         @relation("UserTweets")
 
   @@map("users")
 }
@@ -63,7 +64,7 @@ model Tweet {
   content   Content @relation(fields: [contentId], references: [id], onDelete: Cascade)
   contentId String
 
-  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author   User   @relation("UserTweets", fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
 
   retweets  Int @default(0)
@@ -72,7 +73,8 @@ model Tweet {
   bookmarks Int @default(0)
   shares    Int @default(0)
 
-
+  comments      TweetsOnUsers[] @relation("TweetComments")
+  tweetsOnUsers TweetsOnUsers[] @relation("TweetUsers")
 
   @@index([authorId])
   @@index([contentId])
@@ -100,4 +102,20 @@ model MediaUrl {
   @@map("media_urls")
 }
 
+model TweetsOnUsers {
+  id String @id @default(cuid())
 
+  createdAt DateTime @default(now())
+
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   String
+  tweet    Tweet   @relation("TweetUsers", fields: [tweetId], references: [id], onDelete: Cascade)
+  tweetId  String
+  parent   Tweet?  @relation("TweetComments", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId String? // Esto se usa para rastrear si el tweet es una respuesta a otro tweet (comentario)
+
+  @@index([userId])
+  @@index([tweetId])
+  @@index([parentId])
+  @@map("tweets_on_users")
+}

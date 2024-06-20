@@ -19,24 +19,29 @@ export const createTweet = async (values: TweetFormValues) => {
     return {error: "Invalid fields!"}
   }
 
-  const {description, mediaUrl} = validatedFields.data
+  const {description, mediaUrls} = validatedFields.data
+
+  const content = await db.content.create({
+    data: {
+      text: description,
+      mediaUrls: mediaUrls?.length
+        ? {
+            createMany: {
+              data: mediaUrls?.map((url) => url),
+              skipDuplicates: true,
+            },
+          }
+        : undefined,
+    },
+  })
 
   try {
-    const newTweet = await db.tweet.create({
+    await db.tweet.create({
       data: {
         authorId: user.id,
-        description,
+        contentId: content.id,
       },
     })
-
-    if (mediaUrl) {
-      await db.mediaUrl.createMany({
-        data: mediaUrl.map((url) => ({
-          url: url.url,
-          tweetId: newTweet.id,
-        })),
-      })
-    }
 
     return {
       success: "Tweet created!",

@@ -1,17 +1,41 @@
-import {type Comment, type MediaUrl, type Tweet, type User} from "@prisma/client"
+import {
+  type TweetsOnUsers,
+  type Content,
+  type MediaUrl,
+  type Tweet,
+  type User,
+} from "@prisma/client"
 import {DownloadIcon} from "@radix-ui/react-icons"
 import {FaSave} from "react-icons/fa"
 
 import {TagIcon} from "./icons/icons"
 
-interface CommentExtends extends Comment {
-  author?: User
+interface ContentExtends extends Content {
+  mediaUrls: MediaUrl[]
+}
+
+interface ParentExtends extends Tweet {
+  author: User
+  content: ContentExtends
+}
+
+interface TweetsOnUsersExtends extends TweetsOnUsers {
+  parent?: ParentExtends | null
+}
+
+interface CommentExtends extends TweetsOnUsers {
+  parent?: ParentExtends | null
+  tweet: {
+    content: ContentExtends
+    author: User
+  }
 }
 
 interface TweetExtends extends Tweet {
   author: User
-  comments?: CommentExtends[] | null
-  mediaUrl?: MediaUrl[] | null
+  content: ContentExtends
+  tweetsOnUsers: TweetsOnUsersExtends[]
+  comments: CommentExtends[]
 }
 
 export interface TwitterCardProps {
@@ -91,13 +115,13 @@ export const TwitterCard: React.FC<TwitterCardProps> = ({tweet}) => {
           <section className="flex w-full flex-col items-center gap-y-5">
             {/* content */}
             <section className="flex w-full flex-col items-start gap-y-3">
-              <p className="text-base font-semibold">{tweet.description}</p>
-              {tweet.mediaUrl && tweet.mediaUrl.length > 0 ? (
+              <p className="text-base font-semibold">{tweet.content.text}</p>
+              {tweet.content.mediaUrls && tweet.content.mediaUrls.length > 0 ? (
                 <div className="h-auto max-w-full rounded-xl">
                   <img
-                    alt={tweet.description || ""}
+                    alt={tweet.content.text || ""}
                     className="h-auto max-h-[550px] w-full rounded-xl object-cover"
-                    src={tweet.mediaUrl[0].url || "https://picsum.photos/200"}
+                    src={tweet.content.mediaUrls[0].url || "https://picsum.photos/200"}
                   />
                 </div>
               ) : null}
