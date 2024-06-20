@@ -52,8 +52,6 @@ model User {
 
   accounts Account[]
   tweets   Tweet[]
-  comments Comment[]
-  replies  ReplyComment[]
 
   @@map("users")
 }
@@ -62,7 +60,8 @@ model Tweet {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
 
-  description String?
+  content   Content @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  contentId String
 
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
@@ -73,69 +72,32 @@ model Tweet {
   bookmarks Int @default(0)
   shares    Int @default(0)
 
-  mediaUrl MediaUrl[]
-  comments Comment[]
+
 
   @@index([authorId])
+  @@index([contentId])
+}
+
+model Content {
+  id String @id @default(cuid())
+
+  text String?
+
+  mediaUrls MediaUrl[]
+  tweets    Tweet[]
+
+  @@map("content")
 }
 
 model MediaUrl {
   id  String @id @default(cuid())
   url String
 
-  tweet   Tweet?  @relation(fields: [tweetId], references: [id])
-  tweetId String?
+  content   Content @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  contentId String
 
-  comment   Comment? @relation(fields: [commentId], references: [id])
-  commentId String?
-
-  replyComment   ReplyComment? @relation(fields: [replyCommentId], references: [id])
-  replyCommentId String?
-
-  @@index([tweetId])
-  @@index([commentId])
-  @@index([replyCommentId])
+  @@index([contentId])
+  @@map("media_urls")
 }
 
-model Comment {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  likes     Int      @default(0)
-  retweets  Int      @default(0)
-  bookmarks Int      @default(0)
-  shares    Int      @default(0)
-  plays     Int      @default(0)
 
-  content String?
-
-  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId String
-
-  tweet   Tweet  @relation(fields: [tweetId], references: [id], onDelete: Cascade)
-  tweetId String
-
-  replies   ReplyComment[]
-  mediaUrls MediaUrl[]
-
-  @@index([authorId])
-  @@index([tweetId])
-  @@map("comments")
-}
-
-model ReplyComment {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  likes     Int      @default(0)
-
-  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  commentId String
-
-  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId String
-
-  content   String?
-  mediaUrls MediaUrl[]
-
-  @@index([commentId])
-  @@index([authorId])
-}
