@@ -7,6 +7,7 @@ import {ArrowLeftIcon} from "@radix-ui/react-icons"
 import {format} from "date-fns"
 import {es} from "date-fns/locale"
 import {FaRegComment} from "react-icons/fa"
+import {type Metadata} from "next"
 
 import {db} from "@/lib/db"
 import {cn} from "@/lib/utils"
@@ -20,6 +21,50 @@ interface TweetPageProps {
   params: {
     tweetId?: string
     username?: string
+  }
+}
+
+export async function generateMetadata({params}: TweetPageProps): Promise<Metadata> {
+  const {tweetId, username} = params
+
+  const tweet = await db.tweet.findUnique({
+    where: {
+      id: tweetId,
+      author: {
+        username: {
+          equals: `@${username}`,
+        },
+      },
+    },
+    include: {
+      content: {
+        include: {
+          mediaUrls: true,
+        },
+      },
+      author: true,
+    },
+  })
+
+  return {
+    title: `${tweet?.author.name} en X: "${tweet?.content.text}"`,
+    description: `${tweet?.author.name} en X: "${tweet?.content.text}"`,
+    openGraph: {
+      title: `${username} en X: "${tweet?.content.text}"`,
+      description: `${username} en X: "${tweet?.content.text}"`,
+      images: tweet?.content.mediaUrls,
+      username: username,
+    },
+    twitter: {
+      title: `${username} en X: "${tweet?.content.text}"`,
+      description: `${username} en X: "${tweet?.content.text}"`,
+      images: tweet?.content.mediaUrls,
+      card: "summary_large_image",
+      creator: username,
+    },
+    icons: {
+      icon: "https://imgs.search.brave.com/zbvB3wCiEbb71hYQHjG-8saDi71vPc4yOVhzizCo_8k/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTIy/NjM4NjQzMC92ZWN0/b3IvdmVjdG9yLWRv/dWJsZS1saW5lLWFs/dGVybmF0aXZlLWxv/Z28tbGV0dGVyLXgu/anBnP3M9NjEyeDYx/MiZ3PTAmaz0yMCZj/PWx4UWZCZmNULVJi/UG9ZZVVRUmNsb01o/VG56RnlGQjJndEdZ/N2JVcUtzU2M9",
+    },
   }
 }
 
