@@ -39,18 +39,21 @@ model VerificationToken {
 }
 
 model User {
-  id             String         @id @default(cuid())
-  email          String?        @unique
-  name           String
-  username       String
+  id            String    @id @default(cuid())
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+
+  name     String
+  username String @unique
+
   bio            String?
-  emailVerified  DateTime?      @map("email_verified")
   hashedPassword String?
   image          String?
-  accounts       Account[]
-  tweets         Tweet[]
-  replies        ReplyComment[]
-  comments       Comment[]
+
+  accounts Account[]
+  tweets   Tweet[]
+  comments Comment[]
+  replies  ReplyComment[]
 
   @@map("users")
 }
@@ -59,16 +62,18 @@ model Tweet {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
 
-  mediaUrl    MediaUrl[]
   description String?
 
-  authorId String
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId String
 
-  retweets Int            @default(0)
-  likes    Int            @default(0)
-  plays    Int            @default(0)
-  replies  ReplyComment[]
+  retweets  Int @default(0)
+  likes     Int @default(0)
+  plays     Int @default(0)
+  bookmarks Int @default(0)
+  shares    Int @default(0)
+
+  mediaUrl MediaUrl[]
   comments Comment[]
 
   @@index([authorId])
@@ -78,26 +83,39 @@ model MediaUrl {
   id  String @id @default(cuid())
   url String
 
-  tweet     Tweet?   @relation(fields: [tweetId], references: [id])
-  tweetId   String?
+  tweet   Tweet?  @relation(fields: [tweetId], references: [id])
+  tweetId String?
+
   comment   Comment? @relation(fields: [commentId], references: [id])
   commentId String?
 
+  replyComment   ReplyComment? @relation(fields: [replyCommentId], references: [id])
+  replyCommentId String?
+
   @@index([tweetId])
   @@index([commentId])
+  @@index([replyCommentId])
 }
 
 model Comment {
-  id        String         @id @default(cuid())
-  createdAt DateTime       @default(now())
-  comment   String?
-  mediaUrls MediaUrl[]
-  likes     Int            @default(0)
-  author    User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId  String
-  tweet     Tweet          @relation(fields: [tweetId], references: [id], onDelete: Cascade)
-  tweetId   String
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  likes     Int      @default(0)
+  retweets  Int      @default(0)
+  bookmarks Int      @default(0)
+  shares    Int      @default(0)
+  plays     Int      @default(0)
+
+  content String?
+
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId String
+
+  tweet   Tweet  @relation(fields: [tweetId], references: [id], onDelete: Cascade)
+  tweetId String
+
   replies   ReplyComment[]
+  mediaUrls MediaUrl[]
 
   @@index([authorId])
   @@index([tweetId])
@@ -107,15 +125,17 @@ model Comment {
 model ReplyComment {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  commentId String
-  authorId  String
-  tweetId   String
+  likes     Int      @default(0)
 
-  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  author  User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  tweet   Tweet   @relation(fields: [tweetId], references: [id])
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId String
+
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId String
+
+  content   String?
+  mediaUrls MediaUrl[]
 
   @@index([commentId])
   @@index([authorId])
-  @@index([tweetId])
 }

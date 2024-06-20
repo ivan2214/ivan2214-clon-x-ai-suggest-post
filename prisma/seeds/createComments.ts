@@ -13,10 +13,14 @@ export const createComments = async () => {
       const selectTweet = tweets[Math.floor(Math.random() * tweets.length)]
       const comment = await db.comment.create({
         data: {
-          comment: faker.lorem.paragraph(),
+          content: faker.lorem.paragraph(),
           authorId: selectUser.id,
           likes: faker.number.int({min: 0, max: 100}),
           tweetId: selectTweet.id,
+          bookmarks: faker.number.int({min: 10, max: 100}),
+          plays: faker.number.int({min: 500, max: 1000}),
+          retweets: faker.number.int({min: 0, max: 500000}),
+          shares: faker.number.int({min: 5, max: 500000}),
         },
       })
 

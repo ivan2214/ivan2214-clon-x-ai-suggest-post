@@ -1,4 +1,4 @@
-import {type Account, type ReplyComment, type Tweet, type User} from "@prisma/client"
+import {type Account, type User} from "@prisma/client"
 
 import {db} from "@/lib/db"
 
@@ -20,8 +20,6 @@ export const getUserByEmail = async (email: string) => {
 
 export interface UserExtend extends User {
   accounts: Account[] | null
-  replies?: ReplyComment[] | null
-  tweets?: Tweet[] | null
   _count: {
     tweets: number
   }
@@ -38,8 +36,6 @@ export const getUserById = async (id?: string): Promise<UserExtend | null> => {
       },
       include: {
         accounts: true,
-        replies: true,
-        tweets: true,
         _count: {
           select: {
             tweets: true,

@@ -62,11 +62,15 @@ export default async function HomePageX() {
 
       {/* list tweets */}
       <div className="flex w-full flex-col">
-        {tweets.map((tweet) => (
-          <Link key={tweet.id} href={`/tweet/${tweet.id}`}>
-            <TwitterCard tweet={tweet} />
-          </Link>
-        ))}
+        {tweets.map((tweet) => {
+          const userNameLink = tweet.author.username.replace("@", "")
+
+          return (
+            <Link key={tweet.id} href={`/${userNameLink}/status/${tweet.id}`}>
+              <TwitterCard tweet={tweet} />
+            </Link>
+          )
+        })}
       </div>
     </section>
   )

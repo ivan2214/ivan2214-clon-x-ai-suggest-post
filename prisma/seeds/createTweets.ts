@@ -12,8 +12,11 @@ export async function createTweets() {
       data: {
         description: faker.lorem.paragraph(),
         authorId: selectUser.id,
-        likes: faker.number.int({min: 0, max: 100}),
-        plays: faker.number.int({min: 0, max: 100}),
+        likes: faker.number.int({min: 0, max: 500000}),
+        plays: faker.number.int({min: 500, max: 500000}),
+        bookmarks: faker.number.int({min: 10, max: 500000}),
+        shares: faker.number.int({min: 5, max: 500000}),
+        retweets: faker.number.int({min: 0, max: 500000}),
         createdAt: faker.date.past(),
       },
     })
