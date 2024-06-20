@@ -19,9 +19,7 @@ const headerOptions = [
 export default async function HomePageX() {
   const tweets = await db.tweet.findMany({
     orderBy: {
-      comments: {
-        _count: "desc",
-      },
+      createdAt: "desc",
     },
     select: {
       id: true,

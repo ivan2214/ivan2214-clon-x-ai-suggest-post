@@ -1,5 +1,4 @@
 "use server"
-import type * as z from "zod"
 
 import {revalidatePath} from "next/cache"
 
@@ -15,18 +14,20 @@ export const createTweet = async (values: TweetFormValues) => {
   const validatedFields = TweetSchema.safeParse(values)
 
   if (!validatedFields.success || !user) {
+    console.log("validatedFields", {validatedFields})
+
     return {error: "Invalid fields!"}
   }
 
-  const {description, mediaUrls} = validatedFields.data
+  const {typeTweet = "TWEET", content} = validatedFields.data
 
-  const content = await db.content.create({
+  const contentTweet = await db.content.create({
     data: {
-      text: description,
-      mediaUrls: mediaUrls?.length
+      text: content.text,
+      mediaUrls: content.mediaUrls?.length
         ? {
             createMany: {
-              data: mediaUrls?.map((url) => url),
+              data: content.mediaUrls?.map((url) => url),
               skipDuplicates: true,
             },
           }
@@ -38,7 +39,8 @@ export const createTweet = async (values: TweetFormValues) => {
     await db.tweet.create({
       data: {
         authorId: user.id,
-        contentId: content.id,
+        contentId: contentTweet.id,
+        typeTweet,
       },
     })
 

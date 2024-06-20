@@ -9,9 +9,10 @@ import {continueConversation} from "@/actions/continue-conversation"
 import {cn} from "@/lib/utils"
 import {Button} from "@ui/button"
 import {Textarea} from "@ui/textarea"
-import {createTweet, type TweetFormValues} from "@/actions/create-tweet"
+import {createTweet} from "@/actions/create-tweet"
 import {TweetSchema} from "@/schemas"
 import {type UserExtend} from "@/data/user"
+import {type TweetFormValues} from "@/app/(routes)/(user)/[username]/status/[tweetId]/components/comment-form"
 
 import {Form, FormControl, FormField, FormItem, FormMessage} from "./ui/form"
 
@@ -35,8 +36,11 @@ export default function TweetForm({currentUser}: TweetFormProps) {
 
   const form = useForm<TweetFormValues>({
     defaultValues: {
-      description: "",
-      mediaUrl: [],
+      content: {
+        mediaUrls: [],
+        text: "",
+      },
+      typeTweet: "TWEET",
     },
     resolver: zodResolver(TweetSchema),
   })
@@ -71,7 +75,7 @@ export default function TweetForm({currentUser}: TweetFormProps) {
   }
 
   const handleSuggestionTweet = async () => {
-    const suggestion = form.getValues("description") || ("" as string)
+    const suggestion = form.getValues("content.text") || ("" as string)
 
     const newMessages: CoreMessage[] = [...messages, {content: suggestion, role: "user"}]
 
@@ -102,14 +106,14 @@ export default function TweetForm({currentUser}: TweetFormProps) {
 
   const handleSelectTweet = (index: number) => {
     const tweet = tweetSuggestion.content![index]
-    const oldTweet = form.getValues("description")
-    const oldMediaUrl = form.getValues("mediaUrl")
+    const oldTweet = form.getValues("content.text")
+    const oldMediaUrl = form.getValues("content.mediaUrls")
 
-    form.setValue("description", oldTweet ? `${oldTweet} ${tweet}` : tweet)
+    form.setValue("content.text", oldTweet ? `${oldTweet} ${tweet}` : tweet)
 
     if (tweetSuggestion.mediaUrl) {
       form.setValue(
-        "mediaUrl",
+        "content.mediaUrls",
         oldMediaUrl
           ? [
               ...oldMediaUrl,
@@ -191,7 +195,7 @@ export default function TweetForm({currentUser}: TweetFormProps) {
                 </div>
                 <FormField
                   control={form.control}
-                  name="description"
+                  name="content.text"
                   render={({field}) => (
                     <FormItem>
                       <FormControl>
