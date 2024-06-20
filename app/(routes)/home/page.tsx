@@ -19,47 +19,70 @@ const headerOptions = [
 export default async function HomePageX() {
   const tweets = await db.tweet.findMany({
     orderBy: {
-      createdAt: "desc",
-    },
-    include: {
-      author: true,
-      content: {
-        include: {
-          mediaUrls: true,
-        },
-      },
-      tweetsOnUsers: {
-        include: {
-          parent: {
-            include: {
-              author: true,
-              content: {
-                include: {
-                  mediaUrls: true,
-                },
-              },
-            },
-          },
-        },
-      },
       comments: {
-        include: {
-          tweet: {
-            include: {
-              content: {
-                include: {
-                  mediaUrls: true,
-                },
-              },
-              author: true,
+        _count: "desc",
+      },
+    },
+    select: {
+      id: true,
+      author: {
+        select: {
+          name: true,
+          username: true,
+          image: true,
+        },
+      },
+      content: {
+        select: {
+          id: true,
+          text: true,
+          mediaUrls: {
+            select: {
+              url: true,
+              id: true,
             },
           },
-          parent: {
-            include: {
-              author: true,
+        },
+      },
+      bookmarks: true,
+      likes: true,
+      plays: true,
+      shares: true,
+      retweets: true,
+      createdAt: true,
+      comments: {
+        select: {
+          tweet: {
+            select: {
+              id: true,
               content: {
-                include: {
-                  mediaUrls: true,
+                select: {
+                  id: true,
+                  text: true,
+                  mediaUrls: {
+                    select: {
+                      url: true,
+                      id: true,
+                    },
+                  },
+                },
+              },
+              author: {
+                select: {
+                  name: true,
+                  username: true,
+                  image: true,
+                },
+              },
+              bookmarks: true,
+              likes: true,
+              plays: true,
+              shares: true,
+              retweets: true,
+              createdAt: true,
+              _count: {
+                select: {
+                  comments: true,
                 },
               },
             },
@@ -67,6 +90,8 @@ export default async function HomePageX() {
         },
       },
     },
+
+    take: 15,
   })
 
   const user = await auth()

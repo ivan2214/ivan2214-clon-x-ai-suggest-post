@@ -134,7 +134,7 @@ export default async function TweetPage({params}: TweetPageProps) {
 
         {/* content */}
 
-        <section className="flex w-full flex-col items-center gap-y-5 px-5 py-2">
+        <section className="flex w-full flex-col  gap-y-5 px-5 py-2">
           <div>
             <p>{tweet.content.text}</p>
           </div>
@@ -263,7 +263,7 @@ export default async function TweetPage({params}: TweetPageProps) {
                     </section>
                     {/* content */}
 
-                    <section className="flex w-full flex-col items-center gap-y-5 py-2">
+                    <section className="flex w-full flex-col  gap-y-5 py-2">
                       <div>
                         <p>{comment.tweet.content.text}</p>
                       </div>

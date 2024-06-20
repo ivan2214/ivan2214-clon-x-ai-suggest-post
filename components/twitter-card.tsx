@@ -1,41 +1,46 @@
-import {
-  type TweetsOnUsers,
-  type Content,
-  type MediaUrl,
-  type Tweet,
-  type User,
-} from "@prisma/client"
 import {DownloadIcon} from "@radix-ui/react-icons"
 import {FaSave} from "react-icons/fa"
+import {type Tweet} from "@prisma/client"
 
 import {TagIcon} from "./icons/icons"
 
-interface ContentExtends extends Content {
-  mediaUrls: MediaUrl[]
-}
+type SafeTweet = Omit<Tweet, "authorId" | "contentId">
 
-interface ParentExtends extends Tweet {
-  author: User
-  content: ContentExtends
-}
-
-interface TweetsOnUsersExtends extends TweetsOnUsers {
-  parent?: ParentExtends | null
-}
-
-interface CommentExtends extends TweetsOnUsers {
-  parent?: ParentExtends | null
-  tweet: {
-    content: ContentExtends
-    author: User
+interface TweetExtends extends SafeTweet {
+  author: {
+    name: string
+    username: string
+    image?: string | null
   }
-}
-
-interface TweetExtends extends Tweet {
-  author: User
-  content: ContentExtends
-  tweetsOnUsers: TweetsOnUsersExtends[]
-  comments: CommentExtends[]
+  content: {
+    id: string
+    text?: string | null
+    mediaUrls?: {url: string; id: string}[]
+  }
+  comments: {
+    tweet: {
+      id: string
+      bookmarks: number
+      likes: number
+      plays: number
+      shares: number
+      retweets: number
+      createdAt: Date
+      content: {
+        id: string
+        text?: string | null
+        mediaUrls?: {url: string; id: string}[]
+      }
+      author: {
+        name: string
+        username: string
+        image?: string | null
+      }
+      _count: {
+        comments: number
+      }
+    }
+  }[]
 }
 
 export interface TwitterCardProps {
