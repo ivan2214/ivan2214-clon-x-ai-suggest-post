@@ -10,6 +10,7 @@ import {FaRegComment} from "react-icons/fa"
 
 import {db} from "@/lib/db"
 import {cn} from "@/lib/utils"
+import {Button} from "@/components/ui/button"
 
 interface TweetPageProps {
   params: {
@@ -62,9 +63,9 @@ export default async function TweetPage({params}: TweetPageProps) {
         </Link>
         <h1 className="text-xl font-bold">Post</h1>
       </section>
-      <section className="flex w-full flex-col items-center gap-y-3 px-5">
+      <section className="flex w-full flex-col items-center gap-y-3">
         {/* header */}
-        <section className="flex w-full items-center justify-between">
+        <section className="flex w-full items-center justify-between px-5">
           <section className="flex w-full items-start gap-x-2">
             {/* image profile */}
             <div className="h-11 w-11 overflow-hidden rounded-full">
@@ -81,12 +82,19 @@ export default async function TweetPage({params}: TweetPageProps) {
             </div>
           </section>
           {/* options */}
-          <SlOptions />
+
+          <Button
+            className="transition-colors duration-200 hover:bg-primary/10 hover:text-primary"
+            size="sm"
+            variant="ghost"
+          >
+            <SlOptions className="" />
+          </Button>
         </section>
 
         {/* content */}
 
-        <section className="flex w-full flex-col items-center gap-y-5 py-5">
+        <section className="flex w-full flex-col items-center gap-y-5 px-5 py-2">
           <div>
             <p>{tweet.description}</p>
           </div>
@@ -126,7 +134,7 @@ export default async function TweetPage({params}: TweetPageProps) {
 
         {/* date and plays */}
 
-        <section className="w-full">
+        <section className="w-full px-5">
           <div className="flex items-center gap-x-2">
             <time
               className="text-sm font-extralight text-gray-300"
@@ -144,25 +152,25 @@ export default async function TweetPage({params}: TweetPageProps) {
 
         {/* buttons */}
 
-        <section className="flex w-full items-center justify-between border-b border-t py-3">
-          <div className="flex items-center gap-x-1 text-sm">
-            <FaRegComment />
+        <section className="flex w-full items-center justify-between border-b border-t px-5 py-3">
+          <div className="flex items-center gap-x-1 text-sm transition-colors duration-200 hover:text-primary">
+            <FaRegComment className="h-5 w-5" />
             {tweet.comments.length > 0 ? <span>{tweet.comments.length}</span> : null}
           </div>
-          <div className="flex items-center gap-x-1 text-sm">
-            <AiOutlineRetweet />
+          <div className="flex items-center gap-x-1 text-sm transition-colors duration-200 hover:text-green-500">
+            <AiOutlineRetweet className="h-5 w-5" />
             {tweet.retweets > 0 ? <span>{tweet.retweets}</span> : null}
           </div>
-          <div className="flex items-center gap-x-1 text-sm">
-            <CiHeart />
+          <div className="flex items-center gap-x-1 text-sm transition-colors duration-200 hover:text-rose-500">
+            <CiHeart className="h-5 w-5" />
             {tweet.likes > 0 ? <span>{tweet.likes}</span> : null}
           </div>
-          <div className="flex items-center gap-x-1 text-sm">
-            <CiBookmark />
+          <div className="flex items-center gap-x-1 text-sm transition-colors duration-200 hover:text-primary">
+            <CiBookmark className="h-5 w-5" />
             {tweet.bookmarks > 0 ? <span>{tweet.bookmarks}</span> : null}
           </div>
-          <div className="flex items-center gap-x-1 text-sm">
-            <FiShare />
+          <div className="flex items-center gap-x-1 text-sm transition-colors duration-200 hover:text-primary">
+            <FiShare className="h-5 w-5" />
             {tweet.shares > 0 ? <span>{tweet.shares}</span> : null}
           </div>
         </section>
@@ -173,7 +181,7 @@ export default async function TweetPage({params}: TweetPageProps) {
 
         {/* comments */}
 
-        <section className="w-full">
+        <section className="flex w-full flex-col items-center">
           {tweet.comments.length > 0 &&
             tweet.comments.map((comment) => {
               const userNameLink = comment.author.username.replace("@", "")
@@ -181,7 +189,7 @@ export default async function TweetPage({params}: TweetPageProps) {
               return (
                 <Link
                   key={comment.id}
-                  className="w-full border-b border-t py-2"
+                  className="w-full border-b border-t px-5 py-5"
                   href={`/${userNameLink}/status/${comment.id}`}
                 >
                   <article>
@@ -205,11 +213,17 @@ export default async function TweetPage({params}: TweetPageProps) {
                         </div>
                       </section>
                       {/* options */}
-                      <SlOptions />
+                      <Button
+                        className="transition-colors duration-200 hover:bg-primary/10 hover:text-primary"
+                        size="sm"
+                        variant="ghost"
+                      >
+                        <SlOptions className="" />
+                      </Button>
                     </section>
                     {/* content */}
 
-                    <section className="flex w-full flex-col items-center gap-y-5 py-5">
+                    <section className="flex w-full flex-col items-center gap-y-5 py-2">
                       <div>
                         <p>{comment.content}</p>
                       </div>
@@ -245,25 +259,25 @@ export default async function TweetPage({params}: TweetPageProps) {
 
                     {/* buttons */}
 
-                    <section className="flex w-full items-center justify-between border-b border-t py-3">
-                      <div className="flex items-center gap-x-1 text-sm">
-                        <FaRegComment />
+                    <section className="mt-3 flex w-full items-center justify-between">
+                      <div className="flex items-center gap-x-1 text-sm transition-colors duration-200 hover:text-primary">
+                        <FaRegComment className="h-5 w-5" />
                         {comment.replies.length > 0 ? <span>{comment.replies.length}</span> : null}
                       </div>
-                      <div className="flex items-center gap-x-1 text-sm">
-                        <AiOutlineRetweet />
+                      <div className="flex items-center gap-x-1 text-sm transition-colors duration-200 hover:text-green-500">
+                        <AiOutlineRetweet className="h-5 w-5" />
                         {comment.retweets > 0 ? <span>{comment.retweets}</span> : null}
                       </div>
-                      <div className="flex items-center gap-x-1 text-sm">
-                        <CiHeart />
+                      <div className="flex items-center gap-x-1 text-sm transition-colors duration-200 hover:text-rose-500">
+                        <CiHeart className="h-5 w-5" />
                         {comment.likes > 0 ? <span>{comment.likes}</span> : null}
                       </div>
-                      <div className="flex items-center gap-x-1 text-sm">
-                        <CiBookmark />
+                      <div className="flex items-center gap-x-1 text-sm transition-colors duration-200 hover:text-primary">
+                        <CiBookmark className="h-5 w-5" />
                         {comment.bookmarks > 0 ? <span>{comment.bookmarks}</span> : null}
                       </div>
-                      <div className="flex items-center gap-x-1 text-sm">
-                        <FiShare />
+                      <div className="flex items-center gap-x-1 text-sm transition-colors duration-200 hover:text-primary">
+                        <FiShare className="h-5 w-5" />
                         {comment.shares > 0 ? <span>{comment.shares}</span> : null}
                       </div>
                     </section>
