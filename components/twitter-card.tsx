@@ -4,7 +4,7 @@ import {type Tweet} from "@prisma/client"
 
 import {TagIcon} from "./icons/icons"
 
-type SafeTweet = Omit<Tweet, "authorId" | "contentId">
+type SafeTweet = Omit<Tweet, "authorId" | "contentId" | "typeTweet">
 
 interface TweetExtends extends SafeTweet {
   author: {

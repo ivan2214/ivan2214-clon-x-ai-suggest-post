@@ -67,6 +67,35 @@ export default async function TweetPage({params}: TweetPageProps) {
                   comments: true,
                 },
               },
+              comments: {
+                include: {
+                  tweet: {
+                    include: {
+                      author: true,
+                      content: {
+                        include: {
+                          mediaUrls: true,
+                        },
+                      },
+                      _count: {
+                        select: {
+                          comments: true,
+                        },
+                      },
+                    },
+                  },
+                  parent: {
+                    include: {
+                      author: true,
+                      content: {
+                        include: {
+                          mediaUrls: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
             },
           },
           parent: {
@@ -225,6 +254,8 @@ export default async function TweetPage({params}: TweetPageProps) {
           {tweet.comments.length > 0 &&
             tweet.comments.map((comment) => {
               const userNameLink = comment.tweet.author.username.replace("@", "")
+
+              console.log(comment.tweet)
 
               return (
                 <Link

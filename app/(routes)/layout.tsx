@@ -1,4 +1,5 @@
 import {type ReactNode} from "react"
+import {redirect} from "next/navigation"
 
 import {Sidebar} from "@/app/(routes)/components/sidebar"
 import {SidebarSearch} from "@/app/(routes)/components/sidebar-search"
@@ -12,6 +13,10 @@ interface RoutesLayoutProps {
 export default async function RoutesLayout({children}: RoutesLayoutProps) {
   const user = await auth()
   const currentUser = await getUserById(user?.user.id)
+
+  if (!currentUser) {
+    redirect("/")
+  }
 
   return (
     <main className="container grid h-full w-full grid-flow-row-dense grid-cols-9 px-20">

@@ -3,62 +3,15 @@ import {type User, type Content, type Tweet} from "@prisma/client"
 
 import {db as prisma} from "../../lib/db"
 
+import {createTweet} from "./createTweet"
+import {createComment} from "./createComment"
+
 // Definición de tipos para los objetos de Prisma
-type UserObject = Pick<User, "id">
-type ContentObject = Pick<Content, "id">
-type TweetObject = Pick<Tweet, "id" | "createdAt" | "authorId">
+export type UserObject = Pick<User, "id">
 
-// Función para crear un tweet
-async function createTweet(authorId: string, contentId: string): Promise<TweetObject> {
-  const tweet = await prisma.tweet.create({
-    data: {
-      likes: faker.number.int({min: 0, max: 500000}),
-      plays: faker.number.int({min: 500, max: 500000}),
-      bookmarks: faker.number.int({min: 10, max: 500000}),
-      shares: faker.number.int({min: 5, max: 500000}),
-      retweets: faker.number.int({min: 0, max: 500000}),
-      authorId,
-      contentId,
-      createdAt: faker.date.recent(),
-    },
-  })
+export type ContentObject = Pick<Content, "id">
 
-  return tweet
-}
-
-// Función para crear un comentario
-async function createComment(parentTweetId: string, authorId: string): Promise<TweetObject> {
-  const commentContent: ContentObject = await prisma.content.create({
-    data: {
-      text: faker.lorem.sentence(),
-    },
-  })
-
-  const comment = await prisma.tweet.create({
-    data: {
-      likes: faker.number.int({min: 0, max: 5000}),
-      plays: faker.number.int({min: 50, max: 5000}),
-      bookmarks: faker.number.int({min: 1, max: 5000}),
-      shares: faker.number.int({min: 0, max: 5000}),
-      retweets: faker.number.int({min: 0, max: 5000}),
-      authorId,
-      contentId: commentContent.id,
-      createdAt: faker.date.recent(),
-    },
-  })
-
-  // Crear relación en TweetsOnUsers para el comentario
-  await prisma.tweetsOnUsers.create({
-    data: {
-      userId: authorId,
-      tweetId: comment.id,
-      parentId: parentTweetId, // Establecer el parentId para vincular el comentario con su tweet padre
-      createdAt: comment.createdAt,
-    },
-  })
-
-  return comment
-}
+export type TweetObject = Pick<Tweet, "id" | "createdAt" | "authorId">
 
 // Función principal para crear tweets y sus comentarios
 export async function createTweets(): Promise<void> {
@@ -88,7 +41,7 @@ export async function createTweets(): Promise<void> {
     }
 
     // Determine random number of comments for each tweet
-    const numberOfComments: number = faker.number.int({min: 1, max: 55})
+    const numberOfComments: number = faker.number.int({min: 1, max: 10})
 
     for (let k = 0; k < numberOfComments; k++) {
       const commentUser: UserObject = users[Math.floor(Math.random() * users.length)]

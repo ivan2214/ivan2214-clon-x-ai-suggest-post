@@ -73,6 +73,8 @@ model Tweet {
   bookmarks Int @default(0)
   shares    Int @default(0)
 
+  typeTweet TypeTweet @default(TWEET)
+
   comments      TweetsOnUsers[] @relation("TweetComments")
   tweetsOnUsers TweetsOnUsers[] @relation("TweetUsers")
 
@@ -118,4 +120,15 @@ model TweetsOnUsers {
   @@index([tweetId])
   @@index([parentId])
   @@map("tweets_on_users")
+}
+
+
+enum TypeTweet {
+  TWEET
+  REPLY
+  RETWEET
+  LIKE
+  BOOKMARK
+  SHARE
+
 }

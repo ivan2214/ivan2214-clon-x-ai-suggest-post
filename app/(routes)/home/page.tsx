@@ -90,8 +90,10 @@ export default async function HomePageX() {
         },
       },
     },
-
     take: 25,
+    where: {
+      typeTweet: "TWEET",
+    },
   })
 
   const user = await auth()

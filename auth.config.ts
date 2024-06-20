@@ -14,15 +14,22 @@ export default {
     GitHub({
       clientId: process.env.AUTH_GITHUB_ID,
       clientSecret: process.env.AUTH_GITHUB_SECRET,
+      profile(profile) {
+        return {
+          id: String(profile.id),
+          image: profile.avatar_url,
+          name: profile.name,
+          email: profile.email,
+          username: profile.login
+            ? `@${profile.login}`
+            : `@${profile.name}-${String(profile.id).slice(0, 4)}`,
+        };
+      },
     }),
     google({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
       profile(profile) {
-        console.log({
-          profile,
-        });
-
         return {
           id: profile.sub,
           name: profile.name,
